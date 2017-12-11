@@ -1,4 +1,4 @@
-(ns advent-2017-clj.day3
+(ns advent.clj2017.day3
   (:require [clojure.math.numeric-tower :as m]))
 
 (def input

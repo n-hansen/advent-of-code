@@ -1,4 +1,4 @@
-(ns advent-2017-clj.core)
+(ns advent.clj2017.core)
 
 (defn foo
   "I don't do a whole lot."

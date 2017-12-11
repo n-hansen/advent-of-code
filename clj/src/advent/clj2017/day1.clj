@@ -1,4 +1,4 @@
-(ns advent-2017-clj.day1
+(ns advent.clj2017.day1
   (:require [clojure.java.io :as io]))
 
 (def input

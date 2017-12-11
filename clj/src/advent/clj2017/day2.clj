@@ -1,5 +1,5 @@
-(ns advent-2017-clj.day2
-  (:require [advent-2017-clj.util :refer :all]
+(ns advent.clj2017.day2
+  (:require [advent.clj2017.util :refer :all]
             [blancas.kern.core :as k]
             [blancas.kern.lexer.basic :as l]))
 

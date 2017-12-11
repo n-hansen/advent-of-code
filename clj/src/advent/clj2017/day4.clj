@@ -1,5 +1,5 @@
-(ns advent-2017-clj.day4
-  (:require [advent-2017-clj.util :refer :all]
+(ns advent.clj2017.day4
+  (:require [advent.clj2017.util :refer :all]
             [clojure.string :as s]))
 
 (def input (load "day4-input.txt"))
