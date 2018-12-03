@@ -1,4 +1,4 @@
-module AoC2018.P1.Pt1 where
+module AoC2018.P1 where
 
 import Universum
 
@@ -6,8 +6,8 @@ import Text.Megaparsec
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
 
-run :: Text -> IO ()
-run = print . sum . (:) 0 . parseInput
+runPt1 :: Text -> IO ()
+runPt1 = print . sum . (:) 0 . parseInput
 
 type Input = [Int]
 
