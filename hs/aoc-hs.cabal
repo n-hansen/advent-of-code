@@ -23,3 +23,4 @@ executable aoc
                      , universum
                      , megaparsec
                      , containers
+                     , unordered-containers
