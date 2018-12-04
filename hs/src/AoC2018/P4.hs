@@ -22,13 +22,6 @@ data Timestamp = TS { tsYear :: Int
                     , tsMinute :: Int
                     } deriving (Show,Eq,Ord)
 
--- Clamp to shift hours
-getMinute :: Timestamp -> Int
-getMinute TS{tsHour,tsMinute}
-  | tsHour == 0  = tsMinute
-  | tsHour == 23 = 0
-  | tsHour == 1  = 60
-
 data LogEntry = ShiftBegins Timestamp Int
               | FallsAsleep Timestamp
               | WakesUp Timestamp
