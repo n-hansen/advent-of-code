@@ -13,7 +13,7 @@ import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
 
 p4 :: Puzzle
-p4 = Puzzle "4" inputParser (pure pt1) mempty
+p4 = Puzzle "4" inputParser (pure pt1) (pure pt2)
 
 data Timestamp = TS { tsYear :: Int
                     , tsMonth :: Int
@@ -107,14 +107,19 @@ pt1 logs = show $ sleepiestGuard * sleepiestMinute
                                        )
                      (0, error "never found a sleepy guard")
                      hist
-    sleepiestMinute = snd $
-                      MSet.foldOccur (\m occ old@(max,minute) ->
-                                        if occ > max
-                                        then (occ,m)
-                                        else old
-                                     )
-                      (0, error "never found a sleepy minute")
-                      (hist Map.! sleepiestGuard)
+    sleepiestMinute = fst . findMostFrequent $ hist Map.! sleepiestGuard
+
+pt2 :: Input -> Text
+pt2 logs = show $ guard * minute
+  where
+    (guard,minute,_) = Map.foldlWithKey' (\old@(_,_,max) g (m,cnt) ->
+                                            if cnt > max
+                                            then (g,m,cnt)
+                                            else old
+                                         ) (error "guard error",error "minute error",0)
+                       . fmap findMostFrequent
+                       . analyzeLogs
+                       $ logs
 
 analyzeLogs :: [LogEntry] -> GuardHistories
 analyzeLogs = go Map.empty (error "no one ever started a shift") . sort
@@ -127,3 +132,12 @@ analyzeLogs = go Map.empty (error "no one ever started a shift") . sort
     go _ _ logs = error $ "missing state transition" <> show (take 5 logs)
     recordNap g s w =
       Map.alter (\naps -> Just $ MSet.fromList [s..w-1] <> fromMaybe mempty naps) g
+
+findMostFrequent :: IntMultiSet -> (Int,Int)
+findMostFrequent = MSet.foldOccur
+                   (\val occ old@(_,max) ->
+                       if occ > max
+                       then (val,occ)
+                       else old
+                   )
+                   (error "multiset frequency error",0)
