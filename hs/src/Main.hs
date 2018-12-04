@@ -8,9 +8,10 @@ import AoC2018
 import AoC2018.P1
 import AoC2018.P2
 import AoC2018.P3
+import AoC2018.P4
 
 puzzles :: [Puzzle]
-puzzles = [p1,p2,p3]
+puzzles = [p1,p2,p3,p4]
 
 main :: IO ()
 main = do
