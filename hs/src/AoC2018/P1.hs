@@ -1,5 +1,6 @@
-module AoC2018.P1 where
+module AoC2018.P1 (p1) where
 
+import AoC2018
 import Universum
 
 import Text.Megaparsec
@@ -7,24 +8,20 @@ import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
 import Data.IntSet (member,insert)
 
-runPt1 :: Text -> IO ()
-runPt1 = print . sum . parseInput
-
-runPt2 :: Text -> IO ()
-runPt2 = print . findRepeatedFreq . parseInput
+p1 :: Puzzle
+p1 = Puzzle "1" inputParser (pure pt1) (pure pt2)
 
 type Input = [Int]
-
-type Parser = Parsec Void Text
 
 inputParser :: Parser Input
 inputParser = L.signed space L.decimal `endBy` newline
 
-parseInput :: Text -> Input
-parseInput input =
-  case parse inputParser "" input of
-    Left bundle -> error . toText $ errorBundlePretty bundle
-    Right p -> p
+
+pt1 :: Input -> Text
+pt1 = show . sum
+
+pt2 :: Input -> Text
+pt2 = show . findRepeatedFreq
 
 findRepeatedFreq :: [Int] -> Int
 findRepeatedFreq = firstDupe mempty . scanl (+) 0 . cycle

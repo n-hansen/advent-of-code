@@ -1,25 +1,31 @@
-module AoC2018.P2 where
+module AoC2018.P2 (p2) where
 
-import Universum hiding (elems)
+import AoC2018
+import Universum hiding (elems,many)
 
 import Data.HashMap.Strict (insertWith,elems)
+import Text.Megaparsec
+import Text.Megaparsec.Char
+
+p2 :: Puzzle
+p2 = Puzzle "2" inputParser (pure pt1) (pure pt2)
 
 type Input = [String]
 
-parseInput :: Text -> Input
-parseInput = fmap toString . lines
+inputParser :: Parser Input
+inputParser = many letterChar `endBy` newline
 
-runPt1 :: Text -> IO ()
-runPt1 = print . computeChecksum . fmap countLetterReps . parseInput
+pt1 :: Input -> Text
+pt1 = show . computeChecksum . fmap countLetterReps
   where
     countLetterReps = foldl' (\repMap ltr -> insertWith (+) ltr 1 repMap) mempty
     computeChecksum repMaps = countReps 2 repMaps * countReps 3 repMaps
     countReps n = length . filter (not . null . filter (== n) . elems)
 
-runPt2 :: Text -> IO ()
-runPt2 = putStrLn . formatAnswer . computeAnswer . parseInput
+pt2 :: Input -> Text
+pt2 = formatAnswer . computeAnswer
   where
-    computeAnswer :: Input -> (String, String)
+    computeAnswer :: [String] -> (String, String)
     computeAnswer [id1, id2] = (id1, id2)
     computeAnswer (thisId:remainingIds) =
       case filter (\otherId -> charDiff thisId otherId == 1) remainingIds of

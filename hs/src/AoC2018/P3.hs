@@ -1,6 +1,7 @@
 {-# LANGUAGE NamedFieldPuns #-}
-module AoC2018.P3 where
+module AoC2018.P3 (p3) where
 
+import AoC2018
 import Universum
 import qualified Universum.Unsafe as Unsafe
 
@@ -8,6 +9,9 @@ import Text.Megaparsec
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
 import Data.HashSet (member,insert,size)
+
+p3 :: Puzzle
+p3 = Puzzle "3" inputParser (pure pt1) (pure pt2)
 
 data Claim = Claim { claimId :: Int
                    , hOffset :: Int
@@ -17,8 +21,6 @@ data Claim = Claim { claimId :: Int
                    } deriving (Show)
 
 type Input = [Claim]
-
-type Parser = Parsec Void Text
 
 claimParser :: Parser Claim
 claimParser = do
@@ -32,11 +34,8 @@ claimParser = do
 inputParser :: Parser Input
 inputParser = claimParser `endBy` newline
 
-parseInput :: Text -> Input
-parseInput input =
-  case parse inputParser "" input of
-    Left bundle -> error . toText $ errorBundlePretty bundle
-    Right p -> p
+pt1 :: Input -> Text
+pt1 = show . size . findOverlaps
 
 findOverlaps :: [Claim] -> HashSet (Int,Int)
 findOverlaps claims = snd
@@ -53,13 +52,10 @@ enumeratePoints Claim{hOffset,vOffset,width,height} = do
   y <- [vOffset..vOffset+height-1]
   pure (x,y)
 
-runPt1 :: Text -> IO ()
-runPt1 = print . size . findOverlaps . parseInput
 
-runPt2 :: Text -> IO ()
-runPt2 i = print answer
+pt2 :: Input -> Text
+pt2 allClaims = show answer
   where
-    allClaims = parseInput i
     overlaps = findOverlaps allClaims
     answer = claimId . Unsafe.head . filter checkClaim $ allClaims
     checkClaim = all (\pt -> not $ pt `member` overlaps) . enumeratePoints
