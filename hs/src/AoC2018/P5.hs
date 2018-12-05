@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 module AoC2018.P5 (p5) where
 
 import           AoC2018
@@ -8,11 +9,11 @@ import           Text.Megaparsec
 import           Text.Megaparsec.Char
 
 p5 :: Puzzle
-p5 = Puzzle "5" inputParser (pure pt1) mempty
+p5 = Puzzle "5" inputParser (pure pt1) (pure pt2)
 
 data Unit = Positive Char
           | Negative Char
-          deriving (Show,Eq)
+          deriving (Show,Eq,Ord)
 
 type Input = [Unit]
 
@@ -39,3 +40,16 @@ reduce = go []
 
 pt1 :: Input -> Text
 pt1 = show . length . reduce
+
+pt2 :: Input -> Text
+pt2 input = show . minimum . map removeAndCount . ordNub . map baseUnit $ input
+  where
+    baseUnit (Positive n) = n
+    baseUnit (Negative n) = n
+    removeAndCount u = length
+                       . reduce
+                       . filter (\case
+                                    Positive p -> p /= u
+                                    Negative n -> n /= u
+                                )
+                       $ input
