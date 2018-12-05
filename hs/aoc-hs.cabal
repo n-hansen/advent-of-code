@@ -21,6 +21,7 @@ executable aoc
                      , AoC2018.P2
                      , AoC2018.P3
                      , AoC2018.P4
+                     , AoC2018.P5
   default-language:    Haskell2010
   default-extensions:  NoImplicitPrelude
                      , OverloadedStrings

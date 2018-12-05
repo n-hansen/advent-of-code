@@ -2,7 +2,6 @@
 module AoC2018 ( Puzzle(Puzzle, puzzleId)
                , Parser
                , solvePuzzle
-               , solutionPrinter
                ) where
 
 import           Universum
@@ -20,7 +19,7 @@ data Puzzle = forall input.
 
 solvePuzzle :: Puzzle -> IO Text
 solvePuzzle Puzzle{puzzleId, inputParser, pt1, pt2} =
-  (header <> ) . puzzleSolution . parseInput <$> readInput
+  (header <>) . puzzleSolution . parseInput <$> readInput
   where
     header = "--Puzzle " <> toText puzzleId <> "--\n"
     inputFilename = "inputs/" <> puzzleId
