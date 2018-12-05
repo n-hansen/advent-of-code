@@ -1,14 +1,14 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module AoC2018.P3 (p3) where
 
-import AoC2018
-import Universum
-import qualified Universum.Unsafe as Unsafe
+import           AoC2018
+import           Universum
+import qualified Universum.Unsafe           as Unsafe
 
-import Text.Megaparsec
-import Text.Megaparsec.Char
+import           Data.HashSet               (insert, member, size)
+import           Text.Megaparsec
+import           Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
-import Data.HashSet (member,insert,size)
 
 p3 :: Puzzle
 p3 = Puzzle "3" inputParser (pure pt1) (pure pt2)

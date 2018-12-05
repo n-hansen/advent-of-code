@@ -5,17 +5,17 @@ module AoC2018 ( Puzzle(Puzzle, puzzleId)
                , solutionPrinter
                ) where
 
-import Universum
+import           Universum
 
-import Text.Megaparsec (Parsec, parse, errorBundlePretty)
+import           Text.Megaparsec (Parsec, errorBundlePretty, parse)
 
 type Parser = Parsec Void Text
 
 data Puzzle = forall input.
-              Puzzle { puzzleId :: String -- ¯\_(ツ)_/¯
+              Puzzle { puzzleId    :: String -- ¯\_(ツ)_/¯
                      , inputParser :: Parser input
-                     , pt1 :: Maybe (input -> Text)
-                     , pt2 :: Maybe (input -> Text)
+                     , pt1         :: Maybe (input -> Text)
+                     , pt2         :: Maybe (input -> Text)
                      }
 
 solvePuzzle :: Puzzle -> IO Text
@@ -28,7 +28,7 @@ solvePuzzle Puzzle{puzzleId, inputParser, pt1, pt2} =
     puzzleSolution = solutionPrinter pt1 pt2
     parseInput input =
       case parse inputParser inputFilename input of
-        Left bundle -> error . toText $ errorBundlePretty bundle
+        Left bundle  -> error . toText $ errorBundlePretty bundle
         Right parsed -> parsed
 
 solutionPrinter :: Maybe (input -> Text) -> Maybe (input -> Text) -> input -> Text

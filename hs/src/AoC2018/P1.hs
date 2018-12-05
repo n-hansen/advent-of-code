@@ -1,12 +1,12 @@
 module AoC2018.P1 (p1) where
 
-import AoC2018
-import Universum
+import           AoC2018
+import           Universum
 
-import Text.Megaparsec
-import Text.Megaparsec.Char
+import           Data.IntSet                (insert, member)
+import           Text.Megaparsec
+import           Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
-import Data.IntSet (member,insert)
 
 p1 :: Puzzle
 p1 = Puzzle "1" inputParser (pure pt1) (pure pt2)

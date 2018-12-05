@@ -1,24 +1,24 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module AoC2018.P4 (p4) where
 
-import AoC2018
-import Universum
+import           AoC2018
+import           Universum
 
-import Data.IntMap.Strict (IntMap)
-import qualified Data.IntMap.Strict as Map
-import Data.IntMultiSet (IntMultiSet)
-import qualified Data.IntMultiSet as MSet
-import Text.Megaparsec
-import Text.Megaparsec.Char
+import           Data.IntMap.Strict         (IntMap)
+import qualified Data.IntMap.Strict         as Map
+import           Data.IntMultiSet           (IntMultiSet)
+import qualified Data.IntMultiSet           as MSet
+import           Text.Megaparsec
+import           Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
 
 p4 :: Puzzle
 p4 = Puzzle "4" inputParser (pure pt1) (pure pt2)
 
-data Timestamp = TS { tsYear :: Int
-                    , tsMonth :: Int
-                    , tsDay :: Int
-                    , tsHour :: Int
+data Timestamp = TS { tsYear   :: Int
+                    , tsMonth  :: Int
+                    , tsDay    :: Int
+                    , tsHour   :: Int
                     , tsMinute :: Int
                     } deriving (Show,Eq,Ord)
 

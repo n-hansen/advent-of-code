@@ -1,11 +1,11 @@
 module AoC2018.P2 (p2) where
 
-import AoC2018
-import Universum hiding (elems,many)
+import           AoC2018
+import           Universum            hiding (elems, many)
 
-import Data.HashMap.Strict (insertWith,elems)
-import Text.Megaparsec
-import Text.Megaparsec.Char
+import           Data.HashMap.Strict  (elems, insertWith)
+import           Text.Megaparsec
+import           Text.Megaparsec.Char
 
 p2 :: Puzzle
 p2 = Puzzle "2" inputParser (pure pt1) (pure pt2)
@@ -29,7 +29,7 @@ pt2 = formatAnswer . computeAnswer
     computeAnswer [id1, id2] = (id1, id2)
     computeAnswer (thisId:remainingIds) =
       case filter (\otherId -> charDiff thisId otherId == 1) remainingIds of
-        [] -> computeAnswer remainingIds
+        []          -> computeAnswer remainingIds
         (otherId:_) -> (thisId, otherId)
 
     charDiff :: String -> String -> Int
