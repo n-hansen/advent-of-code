@@ -23,6 +23,7 @@ executable aoc
                      , AoC2018.P4
                      , AoC2018.P5
                      , AoC2018.P6
+                     , AoC2018.P7
   default-language:    Haskell2010
   default-extensions:  NoImplicitPrelude
                      , OverloadedStrings
@@ -33,3 +34,4 @@ executable aoc
                      , containers
                      , unordered-containers
                      , multiset
+                     , mtl
