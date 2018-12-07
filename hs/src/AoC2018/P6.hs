@@ -10,7 +10,7 @@ import           Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
 
 p6 :: Puzzle
-p6 = Puzzle "6" inputParser (pure pt1) mempty
+p6 = Puzzle "6" inputParser (pure pt1) (pure pt2)
 
 type Input = [(Int,Int)]
 
@@ -22,6 +22,15 @@ inputParser = coordinate `endBy` newline
       string ", "
       y <- L.decimal
       pure (x,y)
+
+type Coord = (Int,Int)
+type Distances = [(Char,Int)]
+
+manhattan :: Coord -> Coord -> Int
+manhattan (x1,y1) (x2,y2) = abs (x1-x2) + abs (y1-y2)
+
+frequencies :: Ord a => [a] -> [(a,Int)]
+frequencies = MS.toOccurList . MS.fromList
 
 pt1 :: Input -> Text
 pt1 input = show
@@ -63,19 +72,30 @@ pt1 input = show
                      $ labeledPoints
     removeBoundaryLabels = filter (not . (`elem` boundaryLabels) . snd)
 
-type Coord = (Int,Int)
-type Distances = [(Char,Int)]
-
-manhattan :: Coord -> Coord -> Int
-manhattan (x1,y1) (x2,y2) = abs (x1-x2) + abs (y1-y2)
-
-frequencies :: Ord a => [a] -> [(a,Int)]
-frequencies = MS.toOccurList . MS.fromList
-
-
-
+pt2 :: Input -> Text
+pt2 input = show . length $ closeEnough
+  where
+    tooFar = 10000
+    minX = minimum . fmap fst $ input
+    maxX = maximum . fmap fst $ input
+    minY = minimum . fmap snd $ input
+    maxY = maximum . fmap snd $ input
+    labeledInput = zip ['a'..] input
+    distancesAndCoords :: [(Coord, Distances)]
+    distancesAndCoords = do
+      x <- [minX..maxX]
+      y <- [minY..maxY]
+      pure ( (x,y)
+           , fmap (second $ manhattan (x,y)) labeledInput
+           )
+    closeEnough = filter ((< tooFar)
+                          . sum
+                          . fmap snd)
+                  . map snd
+                  $ distancesAndCoords
 
 
 exampleText = "1, 1\n1, 6\n8, 3\n3, 4\n5, 5\n8, 9\n"
 exampleInput = fromMaybe [] . parseMaybe inputParser $ exampleText
 exampleOutput1 = pt1 exampleInput
+exampleOutput2 = pt2 exampleInput

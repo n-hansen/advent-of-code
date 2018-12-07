@@ -33,5 +33,3 @@ executable aoc
                      , containers
                      , unordered-containers
                      , multiset
-                     , array
-                     , hashable
