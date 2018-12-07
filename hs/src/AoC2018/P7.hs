@@ -9,7 +9,6 @@ import           Control.Monad.Writer.Strict
 import qualified Data.HashMap.Strict         as HM
 import           Data.HashSet                (HashSet)
 import qualified Data.HashSet                as HS
-import           Data.List                   (partition)
 import           Text.Megaparsec
 import           Text.Megaparsec.Char
 
@@ -54,7 +53,7 @@ pt1 = toText . execWriter . topoTraverse
           remainingDeps = filter (\(s,_) -> s /= nextStep) deps
           finalSteps = sort . filter (/= nextStep) $ remainingSteps
       tell [nextStep]
-      if (null remainingDeps)
+      if null remainingDeps
         then tell finalSteps
         else topoTraverse remainingDeps
 
