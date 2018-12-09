@@ -38,3 +38,4 @@ executable aoc
                      , multiset
                      , mtl
                      , vector
+                     , deque

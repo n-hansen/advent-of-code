@@ -2,9 +2,9 @@
 module AoC2018.P9 (p9) where
 
 import           AoC2018
-import           Universum                  hiding (replicate)
+import           Universum                  hiding (uncons)
 
-import           Data.Sequence
+import           Deque
 import           Text.Megaparsec
 import           Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
@@ -23,34 +23,36 @@ inputParser = Game
               <*> L.decimal
               <*  string " points"
 
-data GameState = GS { scores          :: Seq Int -- current player at left head
-                    , circle          :: Seq Int -- current marble at left head, right=cw
+data GameState = GS { scores          :: Deque Int
+                    , circle          :: Deque Int
                     , unplayedMarbles :: [Int]
                     } deriving (Show)
 
-rotate :: Int -> Seq a -> Seq a
-rotate _ Empty      = Empty
-rotate 0 xs         = xs
-rotate n (x :<| xs) | n > 0 = rotate (n-1) (xs |> x)
-rotate n (xs :|> x) = rotate (n+1) (x <| xs)
+instance Container (Deque a)
 
-playGame :: Game -> Seq Int
+rotate :: Int -> Deque a -> Deque a
+rotate 0 xs             = xs
+rotate n xs | n > 0     = rotate (n-1) (shiftLeft xs)
+            | otherwise = rotate (n+1) (shiftRight xs)
+
+playGame :: Game -> Deque Int
 playGame Game{nPlayers,lastMarble} = go initialState
   where
     initialState = GS
-                   (replicate nPlayers 0)
-                   (singleton 0)
+                   (fromList $ replicate nPlayers 0)
+                   (pure 0)
                    [1..lastMarble]
     go (GS scores _ []) = scores
-    go (GS (score :<| scores) circle (m:ms)) =
+    go (GS scores circle (m:ms)) =
       if m `mod` 23 == 0
       then
         let
-          (m2 :<| circle') = rotate (-7) circle
+          Just (m2, circle') = uncons . rotate (-7) $ circle
+          Just (score,scores') = uncons scores
         in
-          go $ GS (scores |> score + m + m2) circle' ms
+          go $ GS (snoc (score + m + m2) scores') circle' ms
       else
-        go $ GS (scores |> score) (m <| rotate 2 circle) ms
+        go $ GS (rotate 1 scores) (cons m $ rotate 2 circle) ms
 
 pt1 :: Game -> Text
 pt1 = show . maximum . playGame
