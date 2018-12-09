@@ -10,7 +10,7 @@ import           Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
 
 p9 :: Puzzle
-p9 = Puzzle "9" inputParser (pure pt1) mempty
+p9 = Puzzle "9" inputParser (pure pt1) (pure pt2)
 
 data Game = Game { nPlayers   :: Int
                  , lastMarble :: Int
@@ -54,3 +54,8 @@ playGame Game{nPlayers,lastMarble} = go initialState
 
 pt1 :: Game -> Text
 pt1 = show . maximum . playGame
+
+pt2 :: Game -> Text
+pt2 = pt1 . modifyGame
+  where
+    modifyGame g@Game{lastMarble} = g { lastMarble = lastMarble * 100 }
