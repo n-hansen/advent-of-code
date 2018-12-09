@@ -23,8 +23,8 @@ inputParser = Game
               <*> L.decimal
               <*  string " points"
 
-data GameState = GS { scores          :: Deque Int
-                    , circle          :: Deque Int
+data GameState = GS { scores          :: !(Deque Int)
+                    , circle          :: !(Deque Int)
                     , unplayedMarbles :: [Int]
                     } deriving (Show)
 
