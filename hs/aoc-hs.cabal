@@ -36,3 +36,4 @@ executable aoc
                      , unordered-containers
                      , multiset
                      , mtl
+                     , vector
