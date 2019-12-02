@@ -14,3 +14,4 @@ pom.xml.asc
 clj/target/**
 .stack-work
 /hs*/dist-newstyle
+/hs-2019/aoc2019.cabal
