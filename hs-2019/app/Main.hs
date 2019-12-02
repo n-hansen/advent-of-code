@@ -1,6 +1,16 @@
 module Main where
 
-import Lib
+import Puzzle
+
+import System.Environment (getArgs)
+
+puzzles :: [Puzzle]
+puzzles = []
 
 main :: IO ()
-main = someFunc
+main = do
+  args <- getArgs
+  forM_ args $ \arg ->
+    mapM_ solvePuzzle
+    . filter ((arg ==) . toS . puzzleId)
+    $ puzzles
