@@ -1,0 +1,84 @@
+# This YAML file describes your package. Stack will automatically generate a
+# Cabal file when you run `stack build`. See the hpack website for help with
+# this file: <https://github.com/sol/hpack>.
+name: aoc2019
+version: '0.0.0'
+license: GPL-3
+author: "nick hansen"
+maintainer: "nick hansen"
+# synopsis: A new Haskeleton package.
+# description: diagrams-sandbox is a new Haskeleton package.
+# category: Other
+
+extra-source-files:
+- LICENSE.md
+- package.yaml
+- stack.yaml
+
+ghc-options: -Wall
+
+default-extensions:
+- NoMonomorphismRestriction
+- FlexibleContexts
+- TypeFamilies
+- ConstraintKinds
+- NamedFieldPuns
+- LambdaCase
+- MultiWayIf
+- TupleSections
+- GeneralizedNewtypeDeriving
+- OverloadedStrings
+- ExistentialQuantification
+
+dependencies:
+- base-noprelude
+- protolude
+- megaparsec
+- containers
+- unordered-containers
+- mtl
+- vector
+
+library:
+  source-dirs: lib
+  dependencies:
+  - primitive
+  - vector
+
+executables:
+  aoc:
+    source-dirs: src
+    main: Main.hs
+    dependencies:
+    - aoc2019
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N
+    - -O2
+
+benchmarks:
+  benchmarks:
+    source-dirs: benchmark
+    main: Main.hs
+    dependencies:
+    - aoc2019
+    - criterion
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N
+    - -O2
+
+tests:
+  test-suite:
+    source-dirs: test-suite
+    main: Main.hs
+    dependencies:
+    - aoc2019
+    - tasty
+    - tasty-hspec
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N

@@ -13,3 +13,4 @@ pom.xml.asc
 *.nrepl-port
 clj/target/**
 .stack-work
+/hs*/dist-newstyle
