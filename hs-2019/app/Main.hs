@@ -1,11 +1,12 @@
 module Main where
 
 import Puzzle
+import Puzzles.P1
 
 import System.Environment (getArgs)
 
 puzzles :: [Puzzle]
-puzzles = []
+puzzles = [p1]
 
 main :: IO ()
 main = do

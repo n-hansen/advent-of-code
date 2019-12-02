@@ -66,3 +66,5 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - aoc2019
+    - tasty
+    - tasty-hspec

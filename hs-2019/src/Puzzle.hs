@@ -9,11 +9,12 @@ import Text.Megaparsec (Parsec, errorBundlePretty, parse)
 
 type Parser = Parsec Void Text
 
-data Puzzle = forall input.
+data Puzzle = forall input result1 result2.
+              (Show result1, Show result2) =>
               Puzzle { puzzleId    :: Text -- ¯\_(ツ)_/¯
                      , inputParser :: Parser input
-                     , pt1         :: Maybe (input -> Text)
-                     , pt2         :: Maybe (input -> Text)
+                     , pt1         :: Maybe (input -> result1)
+                     , pt2         :: Maybe (input -> result2)
                      }
 
 solvePuzzle :: Puzzle -> IO ()
@@ -26,9 +27,9 @@ solvePuzzle Puzzle{puzzleId, inputParser, pt1, pt2} = do
       putText "/!\\ Parse Error /!\\"
       putStrLn $ errorBundlePretty bundle
     Right parsed -> do
-      let run _ Nothing = pure ()
-          run txtName (Just pt) = do
+      let display _ Nothing = pure ()
+          display txtName (Just result) = do
             putText $ " -- " <> txtName <> " --"
-            putText $ pt parsed
-      run "Part 1" pt1
-      run "Part 2" pt2
+            putText $ show result
+      sequence pt1 parsed & display "Part 1"
+      sequence pt2 parsed & display "Part 2"
