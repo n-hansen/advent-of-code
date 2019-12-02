@@ -1,12 +1,12 @@
-/clj/target
-/clj/classes
-/checkouts
+/clj*/target
+/clj*/classes
+/clj*/checkouts
 pom.xml
 pom.xml.asc
 *.jar
 *.class
-/clj/.lein-*
-/clj/.nrepl-port
+/clj*/.lein-*
+/clj*/.nrepl-port
 .hgignore
 .hg/
 *.DS_Store
