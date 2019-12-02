@@ -26,6 +26,8 @@ dependencies:
 - containers
 - vector
 - unordered-containers
+- megaparsec
+- text
 
 default-extensions:
 - OverloadedStrings
