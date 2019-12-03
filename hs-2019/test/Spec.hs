@@ -5,8 +5,11 @@ import Test.Tasty.Hspec
 import Data.List
 import qualified Data.Vector as V
 
+import Parse
+
 import qualified Puzzles.P1 as P1
 import qualified Puzzles.P2 as P2
+import qualified Puzzles.P3 as P3
 
 main :: IO ()
 main = Test.Tasty.defaultMain =<< testSpec "advent-of-code-2019" spec
@@ -49,3 +52,62 @@ spec = parallel $ do
         P2.CS 0 [1,1,1,4,99,5,6,0,99]
         `shouldEvaluateTo`
         P2.CS 8 [30,1,1,4,2,5,6,0,99]
+
+  describe "puzzle 3" $ do
+    describe "part 1" $ do
+      it "enumerates points on a path" $
+        P3.enumeratePath [ P3.Directive P3.R 8
+                         , P3.Directive P3.U 5
+                         , P3.Directive P3.L 5
+                         , P3.Directive P3.D 3
+                         ]
+        `shouldBe`
+        [(x,0) | x <- [0..8]]
+        <> [(8,y) | y <- [1..5]]
+        <> [(x,5) | x <- [7,6..3]]
+        <> [(3,y) | y <- [4,3..2]]
+
+      it "finds intersections" $
+        let p1 = P3.enumeratePath [ P3.Directive P3.R 8
+                                  , P3.Directive P3.U 5
+                                  , P3.Directive P3.L 5
+                                  , P3.Directive P3.D 3
+                                  ]
+            p2 = P3.enumeratePath [ P3.Directive P3.U 7
+                                  , P3.Directive P3.R 6
+                                  , P3.Directive P3.D 4
+                                  , P3.Directive P3.L 4
+                                  ]
+        in P3.intersections p1 p2
+           `shouldMatchList`
+           [(3,3), (6,5)]
+
+      describe "provided examples" $ do
+        let runExample i1 i2 = parseMaybe P3.inputParser (i1 <> "\n" <> i2) >>= P3.pt1
+        specify "example 1" $
+          runExample "R75,D30,R83,U83,L12,D49,R71,U7,L72" "U62,R66,U55,R34,D71,R55,D58,R83"
+          `shouldBe`
+          Just 159
+
+        specify "example 2" $
+          runExample "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51" "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"
+          `shouldBe`
+          Just 135
+
+    describe "part 2" $ do
+      describe "provided examples" $ do
+        let runExample i1 i2 = parseMaybe P3.inputParser (i1 <> "\n" <> i2) >>= P3.pt2
+        specify "example 1" $
+          runExample "R8,U5,L5,D3" "U7,R6,D4,L4"
+          `shouldBe`
+          Just 30
+
+        specify "example 2" $
+          runExample "R75,D30,R83,U83,L12,D49,R71,U7,L72" "U62,R66,U55,R34,D71,R55,D58,R83"
+          `shouldBe`
+          Just 610
+
+        specify "example 3" $
+          runExample "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51" "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"
+          `shouldBe`
+          Just 410
