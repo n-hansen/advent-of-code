@@ -1,5 +1,6 @@
 module Puzzles.Template where
 
+import Parse
 import Puzzle
 
 pPUZZLE :: Puzzle
@@ -10,6 +11,6 @@ type Input = Text
 inputParser :: Parser Input
 inputParser = pure ""
 
-pt1 = Nothing :: Maybe (a -> a)
+pt1 _ = Nothing :: Maybe ()
 
-pt2 = Nothing :: Maybe (a -> a)
+pt2 _ = Nothing :: Maybe ()

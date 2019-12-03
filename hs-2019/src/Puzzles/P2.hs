@@ -6,9 +6,7 @@ import Puzzle
 import Control.Lens
 import Control.Lens.TH
 
-import           Text.Megaparsec
-import           Text.Megaparsec.Char
-import qualified Text.Megaparsec.Char.Lexer as L
+import Parse
 
 import           Data.Vector (Vector)
 import qualified Data.Vector as V
@@ -24,16 +22,16 @@ p2 = Puzzle "2" inputParser pt1 pt2
 type Input = ComputerState
 
 inputParser :: Parser Input
-inputParser = CS 0 . V.fromList <$> (L.signed space L.decimal `sepBy` "," <* optional newline)
+inputParser = CS 0 . V.fromList <$> (signedInteger `sepBy` "," <* optional newline)
 
-pt1 = Just $ getAnswer . runProgram . updateTape
+pt1 = Just . getAnswer . runProgram . updateTape
   where
     updateTape = (tape . ix 1 .~ 12) . (tape . ix 2 .~ 2)
     getAnswer = preview $ tape . ix 0
 
-pt2 = Just findAnswer
+pt2 st = Just findAnswer
   where
-    findAnswer st = headMay [100 * noun + verb | noun <- [0..100], verb <- [0..100], checkValues noun verb st]
+    findAnswer = headMay [100 * noun + verb | noun <- [0..100], verb <- [0..100], checkValues noun verb st]
     checkValues noun verb = (Just 19690720 ==) . getAnswer . runProgram . updateTape noun verb
     updateTape noun verb = (tape . ix 1 .~ noun) . (tape . ix 2 .~ verb)
     getAnswer = preview $ tape . ix 0
