@@ -31,7 +31,12 @@ pt1 = Just $ getAnswer . runProgram . updateTape
     updateTape = (tape . ix 1 .~ 12) . (tape . ix 2 .~ 2)
     getAnswer = preview $ tape . ix 0
 
-pt2 = Nothing :: Maybe (a -> Text)
+pt2 = Just findAnswer
+  where
+    findAnswer st = headMay [100 * noun + verb | noun <- [0..100], verb <- [0..100], checkValues noun verb st]
+    checkValues noun verb = (Just 19690720 ==) . getAnswer . runProgram . updateTape noun verb
+    updateTape noun verb = (tape . ix 1 .~ noun) . (tape . ix 2 .~ verb)
+    getAnswer = preview $ tape . ix 0
 
 runProgram st
   | Just 1    <- st ^? tape . ix pos
