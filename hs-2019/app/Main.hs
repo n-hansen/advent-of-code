@@ -4,11 +4,12 @@ import Puzzle
 import Puzzles.P1
 import Puzzles.P2
 import Puzzles.P3
+import Puzzles.P4
 
 import System.Environment (getArgs)
 
 puzzles :: [Puzzle]
-puzzles = [p1,p2,p3]
+puzzles = [p1,p2,p3,p4]
 
 main :: IO ()
 main = do

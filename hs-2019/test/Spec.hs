@@ -6,16 +6,44 @@ import Data.List
 import qualified Data.Vector as V
 
 import Parse
+import Util
 
 import qualified Puzzles.P1 as P1
 import qualified Puzzles.P2 as P2
 import qualified Puzzles.P3 as P3
+import qualified Puzzles.P4 as P4
 
 main :: IO ()
 main = Test.Tasty.defaultMain =<< testSpec "advent-of-code-2019" spec
 
 spec :: Spec
 spec = parallel $ do
+  describe "utils" $ do
+    specify "window" $
+      window 3 [1..5]
+      `shouldBe`
+      [ [1,2,3]
+      , [2,3,4]
+      , [3,4,5]
+      ]
+
+    specify "window2" $
+      window2 [1..4]
+      `shouldBe`
+      [ (1,2)
+      , (2,3)
+      , (3,4)
+      ]
+
+    specify "window3" $
+      window3 [1..5]
+      `shouldBe`
+      [ (1,2,3)
+      , (2,3,4)
+      , (3,4,5)
+      ]
+
+
   describe "puzzle 1" $ do
     describe "part 1" $ do
       it "computes fuel requirements" $
@@ -111,3 +139,14 @@ spec = parallel $ do
           runExample "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51" "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"
           `shouldBe`
           Just 410
+
+  describe "puzzle 4" $ do
+    specify "part 1" $
+      fmap @[] P4.pt1Criteria [111111,223450,123789]
+      `shouldBe`
+      [True, False, False]
+
+    specify "part 2" $
+      fmap @[] P4.pt2Criteria [112233,123444,111122]
+      `shouldBe`
+      [True,False,True]
