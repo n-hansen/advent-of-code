@@ -63,7 +63,7 @@ spec = parallel $ do
 
   describe "puzzle 2" $ do
     describe "part 1" $ do
-      let shouldEvaluateTo initial final = P2.runProgram initial == final
+      let shouldEvaluateTo initial final = P2.runProgram initial == Just final
       it "can handle add opcode" $
         P2.CS 0 [1,0,0,0,99]
         `shouldEvaluateTo`
