@@ -3,7 +3,6 @@ module Puzzles.P3 where
 import Parse
 import Puzzle
 
-import Control.Lens
 import qualified Data.Set as Set
 import qualified Data.Map.Strict as Map
 

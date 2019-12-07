@@ -4,9 +4,6 @@ module Puzzles.P5 where
 import Parse
 import Puzzle
 
-import Control.Lens
-import Control.Lens.TH
-
 import           Data.Vector (Vector)
 import qualified Data.Vector as V
 

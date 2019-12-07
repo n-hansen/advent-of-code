@@ -3,9 +3,6 @@ module Puzzles.P2 where
 
 import Puzzle
 
-import Control.Lens
-import Control.Lens.TH
-
 import Parse
 
 import           Data.Vector (Vector)
