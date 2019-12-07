@@ -190,6 +190,22 @@ K)L
 |]
     puzzleExample P6.inputParser P6.pt1 1 input 42
 
+  describe "part 2" $ do
+    let input = [r|COM)B
+B)C
+C)D
+D)E
+E)F
+B)G
+G)H
+D)I
+E)J
+J)K
+K)L
+K)YOU
+I)SAN
+|]
+    puzzleExample P6.inputParser P6.pt2 1 input 4
 
 puzzle7 :: Spec
 puzzle7 = describe "puzzle 7" $ do

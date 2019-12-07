@@ -54,22 +54,30 @@ data OrbitalData = HaveAnswer Int
                  | NoData
                  deriving Show
 
-{-
 countTransfers :: OrbitGraph -> Int
-countTransfers = preview _Left . cata alg
+countTransfers = unwrapAnswer . cata alg
   where
     alg (OGF p children) =
-      if | p == santa -> Just $ Left 0
-         | p == you   -> Just $ Right 0
-         | otherwise  -> case bimap minimumMay minimumMay
-                              . partitionEithers
-                              . catMaybes
-                              $ children
-                         of (Nothing,Nothing) -> Nothing
-                            (Just s, Just y)  -> 1 + s + y
-                            (Just s, Nothing) -> 1 + s
-                            (Nothing, Just y) -> 1 + y
+      if | p == santa -> SantaDist 0
+         | p == you   -> YouDist 0
+         | otherwise  -> foldr foldOrbitalData NoData
+                         . fmap increaseDistance
+                         $ children
 
---}
+    foldOrbitalData NoData NoData = NoData
+    foldOrbitalData (HaveAnswer a) _ = HaveAnswer a
+    foldOrbitalData (SantaDist s) (YouDist y) = HaveAnswer $ s + y - 2
+    foldOrbitalData (SantaDist s) NoData = SantaDist s
+    foldOrbitalData (YouDist y) NoData = YouDist  y
+    foldOrbitalData a b = foldOrbitalData b a
 
-pt2 _ = Nothing :: Maybe ()
+    increaseDistance (YouDist y) = YouDist $ y + 1
+    increaseDistance (SantaDist s) = SantaDist $ s + 1
+    increaseDistance d = d
+
+    unwrapAnswer (HaveAnswer a) = a
+
+    you = Planet "YOU"
+    santa = Planet "SAN"
+
+pt2 = Just . countTransfers
