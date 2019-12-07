@@ -29,6 +29,9 @@ dependencies:
 - megaparsec
 - text
 - lens
+- transformers
+- recursion-schemes
+- raw-strings-qq
 
 default-extensions:
 - OverloadedStrings
@@ -43,6 +46,8 @@ default-extensions:
 - TupleSections
 - GeneralizedNewtypeDeriving
 - TypeApplications
+- PatternSynonyms
+- ViewPatterns
 
 library:
   source-dirs: src

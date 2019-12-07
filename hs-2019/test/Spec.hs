@@ -1,9 +1,11 @@
 {-# LANGUAGE OverloadedLists #-}
+{-# LANGUAGE QuasiQuotes #-}
 import qualified Test.Tasty
 import Test.Tasty.Hspec
 
 import Data.List
 import qualified Data.Vector as V
+import Text.RawString.QQ
 
 import Parse
 import Util
@@ -12,6 +14,7 @@ import qualified Puzzles.P1 as P1
 import qualified Puzzles.P2 as P2
 import qualified Puzzles.P3 as P3
 import qualified Puzzles.P4 as P4
+import qualified Puzzles.P6 as P6
 
 main :: IO ()
 main = Test.Tasty.defaultMain =<< testSpec "advent-of-code-2019" spec
@@ -23,6 +26,8 @@ spec = parallel $ do
   puzzle2
   puzzle3
   puzzle4
+  puzzle5
+  puzzle6
 
 
 utilSpec :: Spec
@@ -166,3 +171,27 @@ puzzle4 = describe "puzzle 4" $ do
     fmap @[] P4.pt2Criteria [112233,123444,111122]
     `shouldBe`
     [True,False,True]
+
+
+puzzle5 :: Spec
+puzzle5 = pure () -- TODO
+
+
+puzzle6 :: Spec
+puzzle6 = describe "puzzle 6" $ do
+  describe "part 1" $ do
+    specify "example" $
+      let input = [r|COM)B
+B)C
+C)D
+D)E
+E)F
+B)G
+G)H
+D)I
+E)J
+J)K
+K)L
+|]
+          processed = parseMaybe P6.inputParser input >>= P6.pt1
+      in processed `shouldBe` Just 42
