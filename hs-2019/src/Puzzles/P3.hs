@@ -42,7 +42,7 @@ pt2 = Just
       . intersections'
       . bimap enumeratePath' enumeratePath'
 
-enumeratePath = go (0,0) D 0
+enumeratePath = go (0 :: Int,0) D 0
   where
     go loc _ 0 [] = [loc]
     go loc _ 0 (Directive dir dist:rest) = go loc dir dist rest
@@ -57,7 +57,7 @@ intersections path = filter (flip Set.member . Set.delete (0,0) . Set.fromList $
 
 manhattan (x,y) = abs x + abs y
 
-enumeratePath' = go ((0,0),0) D 0
+enumeratePath' = go ((0,0),0 :: Int) D 0
   where
     go loc _ 0 [] = [loc]
     go loc _ 0 (Directive dir dist:rest) = go loc dir dist rest

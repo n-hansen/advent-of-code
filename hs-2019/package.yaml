@@ -32,6 +32,7 @@ dependencies:
 - transformers
 - recursion-schemes
 - raw-strings-qq
+- prettyprinter
 
 default-extensions:
 - OverloadedStrings

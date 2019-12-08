@@ -32,7 +32,7 @@ flattenImage = fmap (fmap flattenLayers . transpose) . transpose
 
 render = foldMap renderRow
   where
-    renderRow r = foldMap renderCell r <> "\n"
+    renderRow r = foldMap renderCell r <> ("\n" :: Text)
     renderCell '0' = " "
     renderCell '1' = "X"
 
