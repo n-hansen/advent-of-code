@@ -23,24 +23,23 @@ import Parse
 import Util
 
 import           Control.Monad.Trans.Maybe
-import           Control.Monad.State
-import           Data.Vector (Vector)
-import qualified Data.Vector as Vec
+import           Data.Vector.Unboxed (Vector)
+import qualified Data.Vector.Unboxed as Vec
+
+
+----- TYPES -----
 
 newtype Addr = Addr { unAddr :: Int } deriving (Eq,Show,Ord,Enum,Generic)
 newtype Val = Val { unVal :: Int } deriving (Eq,Show,Ord,Enum,Generic)
 instance Wrapped Addr where
 instance Wrapped Val where
 
-
------ TYPES -----
-
 type Tape = Vector Int
 
-data ComputerState = CS { _position :: Addr
+data ComputerState = CS { _position :: !Addr
                         , _inputStream :: [Int]
                         , _outputStream :: [Int]
-                        , _tape :: Tape
+                        , _tape :: !Tape
                         } deriving (Eq, Show)
 makeLenses ''ComputerState
 
@@ -52,7 +51,6 @@ data Status = Continue | BlockedOnInput | Done
 type OpView = Maybe (Val, [OpArg])
 data OpArg = PositionMode Addr Val
            | ImmediateMode Val
-           | InvalidArg
            deriving (Eq,Show)
 
 newtype RunResult = RunResult (Status, ComputerState) deriving Show
@@ -82,9 +80,15 @@ tapeParser = fmap Vec.fromList $ signedInteger `sepBy` "," <* optional newline
 
 ----- INTERNAL IMPL -----
 
+mainLoop :: Compute Status
+mainLoop = do
+  status <- eval =<< get
+  case status of
+    Continue -> mainLoop
+    _        -> pure status
+
 argVal (PositionMode _ (Val v)) = Just v
 argVal (ImmediateMode (Val v)) = Just v
-argVal _ = Nothing
 
 pattern ArgVal v <- (argVal -> Just v)
 pattern ArgAddr a <- PositionMode a _
@@ -94,8 +98,8 @@ atAddr (Addr addr) = tape . ix addr
 deref :: ComputerState -> Addr -> Maybe Int
 deref st addr = st ^? atAddr addr
 
-readArg :: ComputerState -> Int -> Addr -> OpArg
-readArg st mode addr = fromMaybe InvalidArg $ do
+readArg :: ComputerState -> Int -> Addr -> Maybe OpArg
+readArg st mode addr = do
   atPos <- st `deref` addr
   case mode of
     0 -> PositionMode (Addr atPos) . Val <$> st `deref` Addr atPos
@@ -109,7 +113,10 @@ viewOp st = do
                     . (`divMod` 100)
                     <$> st `deref` pos
   pure ( Val op
-       , zipWith (readArg st) argModes [succ pos..]
+       , catMaybes
+         . takeWhile isJust
+         . zipWith (readArg st) argModes
+         $ [succ pos..]
        )
 
 pattern Op0 op <- Just (Val op, _)
@@ -193,12 +200,3 @@ eval st
 
   where
     op = viewOp st
-
-
-mainLoop :: Compute Status
-mainLoop = do
-  status <- eval =<< get
-  case status of
-    Continue -> mainLoop
-    _        -> pure status
-

@@ -1,1 +1,3 @@
 .session_id
+*.prof
+/bench-out
