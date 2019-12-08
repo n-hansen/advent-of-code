@@ -33,6 +33,7 @@ dependencies:
 - recursion-schemes
 - raw-strings-qq
 - prettyprinter
+- extra
 
 default-extensions:
 - OverloadedStrings

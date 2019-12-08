@@ -259,21 +259,18 @@ puzzle7 = describe "puzzle 7" $ do
 
 puzzle8 :: Spec
 puzzle8 = describe "puzzle 8" $ do
-  let parse = parseMaybe P8.inputParser
   describe "part 1" $ do
     it "reshapes" $
-      P8.reshape 3 2 <$> parse "123456789012"
+      P8.reshape 3 2 "123456789012"
       `shouldBe`
-      Just
-      [[['1','2','3'],
-        ['4','5','6']],
-       [['7','8','9'],
-        ['0','1','2']]]
+      [["123",
+        "456"],
+       ["789",
+        "012"]]
 
   describe "part 2" $ do
     it "flattens" $
-      (P8.flattenImage . P8.reshape 2 2 <$> parse "0222112222120000")
+      (P8.flattenImage . P8.reshape 2 2 $ "0222112222120000")
       `shouldBe`
-      Just
-      [['0','1'],
-       ['1','0']]
+      ["01",
+       "10"]

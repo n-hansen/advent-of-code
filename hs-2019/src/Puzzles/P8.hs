@@ -4,6 +4,9 @@ import Parse
 import Puzzle
 import Util
 
+import qualified Data.Text as T
+import Data.List.Extra
+
 p8 :: Puzzle
 p8 = Puzzle "8" inputParser pt1 pt2
 
@@ -12,27 +15,22 @@ type Input = [Char]
 inputParser :: Parser Input
 inputParser = many digitChar
 
-reshape width height = fmap makeLayer . chunks (width * height)
-  where
-    makeLayer = chunks width
-    chunks n = unfoldr $ \xs -> if null xs then Nothing else Just (splitAt n xs)
+reshape width height = chunksOf height . chunksOf width
 
 pt1 = Just
       . getAnswer
-      . minimumBy (compare `on` countThing '0')
+      . minimumOn (countOf '0')
       . reshape 25 6
   where
-    countThing x = length . filter (== x) . mconcat
-    getAnswer xs = countThing '1' xs * countThing '2' xs
+    countOf x = length . filter (== x) . mconcat
+    getAnswer = (*) <$> countOf '1' <*> countOf '2'
 
 flattenImage = fmap (fmap flattenLayers . transpose) . transpose
   where
-    flattenLayers ('2':xs) = flattenLayers xs
-    flattenLayers (x:_)  = x
+    flattenLayers = unsafeHead . dropWhile (== '2')
 
-render = foldMap renderRow
+render = T.unlines . fmap (foldMap renderCell)
   where
-    renderRow r = foldMap renderCell r <> ("\n" :: Text)
     renderCell '0' = " "
     renderCell '1' = "X"
 
