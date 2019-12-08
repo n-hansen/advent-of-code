@@ -22,6 +22,7 @@ import qualified Puzzles.P4 as P4
 import qualified Puzzles.P5 as P5
 import qualified Puzzles.P6 as P6
 import qualified Puzzles.P7 as P7
+import qualified Puzzles.P8 as P8
 
 main :: IO ()
 main = Test.Tasty.defaultMain =<< testSpec "advent-of-code-2019" spec
@@ -37,6 +38,7 @@ spec = parallel $ do
   puzzle5
   puzzle6
   puzzle7
+  puzzle8
 
 
 util :: Spec
@@ -254,3 +256,24 @@ puzzle7 = describe "puzzle 7" $ do
     example 2
       "3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10"
       (Just 18216)
+
+puzzle8 :: Spec
+puzzle8 = describe "puzzle 8" $ do
+  let parse = parseMaybe P8.inputParser
+  describe "part 1" $ do
+    it "reshapes" $
+      P8.reshape 3 2 <$> parse "123456789012"
+      `shouldBe`
+      Just
+      [[['1','2','3'],
+        ['4','5','6']],
+       [['7','8','9'],
+        ['0','1','2']]]
+
+  describe "part 2" $ do
+    it "flattens" $
+      (P8.flattenImage . P8.reshape 2 2 <$> parse "0222112222120000")
+      `shouldBe`
+      Just
+      [['0','1'],
+       ['1','0']]

@@ -8,11 +8,12 @@ import Puzzles.P4
 import Puzzles.P5
 import Puzzles.P6
 import Puzzles.P7
+import Puzzles.P8
 
 import System.Environment (getArgs)
 
 puzzles :: [Puzzle]
-puzzles = [p1,p2,p3,p4,p5,p6,p7]
+puzzles = [p1,p2,p3,p4,p5,p6,p7,p8]
 
 main :: IO ()
 main = do
