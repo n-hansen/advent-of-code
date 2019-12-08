@@ -7,13 +7,19 @@ import Data.List
 import qualified Data.Vector as V
 import Text.RawString.QQ
 
+import System.IO.Unsafe (unsafePerformIO)
+
 import Parse
 import Util
 
+import qualified IntcodeComputer as IC
+
+import Puzzle (readPuzzleInput)
 import qualified Puzzles.P1 as P1
 import qualified Puzzles.P2 as P2
 import qualified Puzzles.P3 as P3
 import qualified Puzzles.P4 as P4
+import qualified Puzzles.P5 as P5
 import qualified Puzzles.P6 as P6
 import qualified Puzzles.P7 as P7
 
@@ -22,7 +28,8 @@ main = Test.Tasty.defaultMain =<< testSpec "advent-of-code-2019" spec
 
 spec :: Spec
 spec = parallel $ do
-  utilSpec
+  util
+  intcodeComputer
   puzzle1
   puzzle2
   puzzle3
@@ -32,8 +39,8 @@ spec = parallel $ do
   puzzle7
 
 
-utilSpec :: Spec
-utilSpec = describe "utils" $ do
+util :: Spec
+util = describe "utils" $ do
   specify "window" $
       window 3 [1..5]
       `shouldBe`
@@ -59,12 +66,47 @@ utilSpec = describe "utils" $ do
     ]
 
 
+intcodeComputer :: Spec
+intcodeComputer = describe "intcode computer" $ do
+  let assertFinalTape init input expect =
+        case IC.initProgram init
+             & IC.provideInput input
+             & IC.runProgram
+        of
+          IC.Halted (IC.Tape t) -> t `shouldBe` expect
+          r -> expectationFailure $ show r
+      assertOutput init input expect =
+        case IC.initProgram init
+             & IC.provideInput input
+             & IC.runProgram
+        of
+          IC.Halted (IC.Output t) -> t `shouldBe` expect
+  it "can handle add opcode" $
+    assertFinalTape
+    [1,0,0,0,99] []
+    [2,0,0,0,99]
+  it "can handle multiply opcode" $
+    assertFinalTape
+    [2,3,0,3,99] []
+    [2,3,0,6,99]
+  it "can handle multiply opcodes 2" $
+    assertFinalTape
+    [2,4,4,5,99,0] []
+    [2,4,4,5,99,9801]
+  it "loops until halt" $
+    assertFinalTape
+    [1,1,1,4,99,5,6,0,99] []
+    [30,1,1,4,2,5,6,0,99]
+
+
 puzzleExample parser solver eg input expectation =
   specify ("example " <> show eg) $
   (parseMaybe parser input >>= solver)
   `shouldBe`
   Just expectation
 
+puzzleInput :: Text -> Text
+puzzleInput = unsafePerformIO . readPuzzleInput
 
 puzzle1 :: Spec
 puzzle1 = describe "puzzle 1" $ do
@@ -88,25 +130,9 @@ puzzle1 = describe "puzzle 1" $ do
 
 puzzle2 :: Spec
 puzzle2 = describe "puzzle 2" $ do
-  describe "part 1" $ do
-    let shouldEvaluateTo initial final = P2.runProgram initial == Just final
-    it "can handle add opcode" $
-      P2.CS 0 [1,0,0,0,99]
-      `shouldEvaluateTo`
-      P2.CS 4 [2,0,0,0,99]
-    it "can handle multiply opcode" $
-      P2.CS 0 [2,3,0,3,99]
-      `shouldEvaluateTo`
-      P2.CS 4 [2,3,0,6,99]
-    it "can handle multiply opcodes 2" $
-      P2.CS 0 [2,4,4,5,99,0]
-      `shouldEvaluateTo`
-      P2.CS 4 [2,4,4,5,99,9801]
-    it "loops until halt" $
-      P2.CS 0 [1,1,1,4,99,5,6,0,99]
-      `shouldEvaluateTo`
-      P2.CS 8 [30,1,1,4,2,5,6,0,99]
-
+  let input = puzzleInput "2"
+  puzzleExample P2.inputParser P2.pt1 1 input $ 3224742
+  puzzleExample P2.inputParser P2.pt2 2 input $ [7960]
 
 puzzle3 :: Spec
 puzzle3 = describe "puzzle 3" $ do
@@ -170,7 +196,10 @@ puzzle4 = describe "puzzle 4" $ do
 
 
 puzzle5 :: Spec
-puzzle5 = pure () -- TODO
+puzzle5 = describe "puzzle 5" $ do
+  let input = puzzleInput "5"
+  puzzleExample P5.inputParser P5.pt1 1 input $ Just 13285749
+  puzzleExample P5.inputParser P5.pt2 2 input $ Just 5000972
 
 
 puzzle6 :: Spec

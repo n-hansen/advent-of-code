@@ -1,6 +1,7 @@
 module Puzzle
   ( Puzzle(Puzzle, puzzleId)
   , Parser
+  , readPuzzleInput
   , solvePuzzle
   ) where
 
@@ -16,12 +17,13 @@ data Puzzle = forall input result1 result2.
                      , pt2         :: input -> Maybe result2
                      }
 
+readPuzzleInput pid = readFile $ "inputs/" <> toS pid
+
 solvePuzzle :: Puzzle -> IO ()
 solvePuzzle Puzzle{puzzleId, inputParser, pt1, pt2} = do
   putText $ "--- Puzzle " <> puzzleId <> " ---"
-  let inputFilename = "inputs/" <> toS puzzleId
-  rawInput <- readFile inputFilename
-  case parse inputParser inputFilename rawInput of
+  rawInput <- readPuzzleInput puzzleId
+  case parse inputParser ("puzzle " <> toS puzzleId <> " input") rawInput of
     Left bundle -> do
       putText "/!\\ Parse Error /!\\"
       putStrLn $ errorBundlePretty bundle

@@ -5,4 +5,5 @@ module Prelude
 import           Protolude        as X hiding (to,from,uncons,unsnoc,(<.>))
 import           Protolude.Error  as X
 import           Unsafe           as X
+import           Control.Arrow    as X hiding (first,second)
 import           Control.Lens     as X hiding (Strict)

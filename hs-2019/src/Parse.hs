@@ -5,7 +5,7 @@ module Parse
   , Parser
   ) where
 
-import           Text.Megaparsec as X
+import           Text.Megaparsec as X hiding (State)
 import           Text.Megaparsec.Char as X
 import qualified Text.Megaparsec.Char.Lexer as L
 
