@@ -13,16 +13,6 @@ type Input = Tape
 inputParser :: Parser Input
 inputParser = tapeParser
 
-pt1 input = Just $ do
-  Halted (Output o) <- initProgram input
-                       & provideInput [1]
-                       & runProgram
-                       & Just
-  pure o
+pt1 input = Just $ headMay =<< runUntilHalt input [1]
 
-pt2 input = Just $ do
-  Halted (Output o) <- initProgram input
-                       & provideInput [2]
-                       & runProgram
-                       & Just
-  pure o
+pt2 input = Just $ headMay =<< runUntilHalt input [2]

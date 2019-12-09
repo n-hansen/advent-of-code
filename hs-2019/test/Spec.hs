@@ -3,9 +3,6 @@
 import qualified Test.Tasty
 import Test.Tasty.Hspec
 
-import Data.List
-import qualified Data.Vector as V
-import qualified Data.Vector.Unboxed as VU
 import Text.RawString.QQ
 
 import System.IO.Unsafe (unsafePerformIO)
@@ -77,7 +74,7 @@ intcodeComputer = describe "intcode computer" $ do
              & IC.provideInput input
              & IC.runProgram
         of
-          IC.Halted (IC.Tape t) -> (VU.slice 0 (VU.length expect) t) `shouldBe` expect
+          IC.Halted (IC.Tape t) -> (take (length expect) t) `shouldBe` expect
           r -> expectationFailure $ show r
       assertOutput init input expect =
         case IC.initProgram init
@@ -284,3 +281,9 @@ puzzle8 = describe "puzzle 8" $ do
       `shouldBe`
       ["01",
        "10"]
+
+puzzle9 :: Spec
+puzzle9 = describe "puzzle 9" $ do
+  let input = puzzleInput "9"
+  puzzleExample P5.inputParser P5.pt1 1 input $ Just 3100786347
+  puzzleExample P5.inputParser P5.pt2 2 input $ Just 87023

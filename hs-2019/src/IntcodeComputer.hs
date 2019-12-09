@@ -10,6 +10,7 @@ module IntcodeComputer
   , pattern Halted
   , pattern WaitingForInput
   , runProgram
+  , runUntilHalt
   , initProgram
   , provideInput
   , tapeParser
@@ -21,8 +22,8 @@ module IntcodeComputer
 
 import Parse
 
-import           Data.Vector.Unboxed (Vector)
-import qualified Data.Vector.Unboxed as Vec
+import           Data.IntMap.Strict (IntMap)
+import qualified Data.IntMap.Strict as IM
 
 
 ----- TYPES -----
@@ -32,13 +33,14 @@ newtype Val = Val { unVal :: Int } deriving (Eq,Show,Ord,Enum,Generic)
 instance Wrapped Addr where
 instance Wrapped Val where
 
-type Tape = Vector Int
+type Tape = [Int]
+type InternalTape =  IntMap Int
 
 data ComputerState = CS { _position :: !Addr
                         , _relativeBase :: !Addr
                         , _inputStream :: [Int]
                         , _outputStream :: [Int]
-                        , _tape :: !Tape
+                        , _tape :: !InternalTape
                         } deriving (Eq, Show)
 makeLenses ''ComputerState
 
@@ -47,7 +49,7 @@ type Compute = State ComputerState
 data Status = Continue | BlockedOnInput | Done
             deriving (Eq,Show)
 
-type OpView = Maybe (Val, [OpArg])
+type OpView = (Val, [OpArg])
 data OpArg = PositionMode Addr Val
            | RelativeMode Addr Val
            | ImmediateMode Val
@@ -58,7 +60,7 @@ newtype RunResult = RunResult (Status, ComputerState) deriving Show
 ----- TOP LEVEL API -----
 
 -- ComputerState views
-pattern Tape t <- (view tape -> t)
+pattern Tape t <- (views tape unrollTape -> t)
 pattern Output o <- (view outputStream -> o)
 pattern DrainedOutput o st <- (view outputStream &&& outputStream %~ mempty -> (o, st))
 
@@ -70,20 +72,24 @@ pattern WaitingForInput s <- RunResult (BlockedOnInput, s)
 runProgram :: ComputerState -> RunResult
 runProgram = RunResult . runState mainLoop
 
-initProgram listing = CS (Addr 0) (Addr 0) [] [] listing'
-  where
-    listing' = listing <> Vec.replicate (tapeSize - Vec.length listing) 0
+initProgram :: Tape -> ComputerState
+initProgram = CS (Addr 0) (Addr 0) [] [] . IM.fromAscList . zip [0..]
+
+runUntilHalt :: Tape -> [Int] -> Maybe [Int]
+runUntilHalt init input =
+  case initProgram init
+       & provideInput input
+       & runProgram
+  of Halted (Output o) -> Just o
+     _ -> Nothing
 
 provideInput :: [Int] -> ComputerState -> ComputerState
 provideInput input = inputStream %~ (<> input)
 
 tapeParser :: Parser Tape
-tapeParser = fmap Vec.fromList $ signedInteger `sepBy` "," <* optional newline
+tapeParser = signedInteger `sepBy` "," <* optional newline
 
 ----- INTERNAL IMPL -----
-
-tapeSize :: Int
-tapeSize = 10000
 
 mainLoop :: Compute Status
 mainLoop = do
@@ -91,6 +97,15 @@ mainLoop = do
   case status of
     Continue -> mainLoop
     _        -> pure status
+
+unrollTape :: IntMap Int -> [Int]
+unrollTape = take 1000 . fillBlanks 0 . IM.toAscList
+  where
+    fillBlanks _ [] = repeat 0
+    fillBlanks i xs@((j,x):ys) =
+      if i == j
+      then x : fillBlanks (i+1) ys
+      else 0 : fillBlanks (i+1) xs
 
 argVal (PositionMode _ (Val v)) = v
 argVal (ImmediateMode (Val v)) = v
@@ -103,39 +118,40 @@ argAddr _ = Nothing
 pattern ArgVal v <- (argVal -> v)
 pattern ArgAddr a <- (argAddr -> Just a)
 
-atAddr (Addr addr) = tape . ix addr
+atAddr (Addr addr) = tape . at addr
 
-deref :: ComputerState -> Addr -> Maybe Int
-deref st addr = st ^? atAddr addr
+deref :: ComputerState -> Addr -> Int
+deref st addr = st ^. atAddr addr . non 0
 
 readArg :: ComputerState -> Int -> Addr -> Maybe OpArg
 readArg st mode addr = do
-  atPos <- st `deref` addr
+  let atPos = st `deref` addr
   case mode of
-    0 -> PositionMode (Addr atPos) . Val <$> st `deref` Addr atPos
+    0 -> pure . PositionMode (Addr atPos) . Val $ st `deref` Addr atPos
     1 -> pure . ImmediateMode . Val $ atPos
     2 -> let absAddr = st ^. relativeBase . to (_Wrapped' +~ atPos)
-         in RelativeMode absAddr . Val <$> st `deref` absAddr
+         in pure . RelativeMode absAddr . Val $ st `deref` absAddr
     _ -> Nothing
 
 viewOp :: ComputerState -> OpView
-viewOp st = do
-  let pos = st ^. position
-  (argModes, op) <- first (unfoldr $ Just . swap . (`divMod` 10))
-                    . (`divMod` 100)
-                    <$> st `deref` pos
-  pure ( Val op
-       , catMaybes
-         . takeWhile isJust
-         . zipWith (readArg st) argModes
-         $ [succ pos..]
-       )
+viewOp st = let pos = st ^. position
+                (argModes, op) = first (unfoldr $ Just . swap . (`divMod` 10))
+                                 . (`divMod` 100)
+                                 $ st `deref` pos
+            in ( Val op
+               , catMaybes
+                 . takeWhile isJust
+                 . zipWith (readArg st) argModes
+                 $ [succ pos..]
+               )
 
-pattern Op0 op <- Just (Val op, _)
-pattern Op1 op arg1 <- Just (Val op, arg1:_)
-pattern Op2 op arg1 arg2 <- Just (Val op, arg1:arg2:_)
-pattern Op3 op arg1 arg2 arg3 <- Just (Val op, arg1:arg2:arg3:_)
+pattern Op0 op <- (Val op, _)
+pattern Op1 op arg1 <- (Val op, arg1:_)
+pattern Op2 op arg1 arg2 <- (Val op, arg1:arg2:_)
+pattern Op3 op arg1 arg2 arg3 <- (Val op, arg1:arg2:arg3:_)
 
+writeTo :: Addr -> Int -> Compute ()
+writeTo addr val = atAddr addr .= Just val
 
 advance :: Int -> Compute ()
 advance n = position . _Wrapped' += n
@@ -145,14 +161,14 @@ eval st
   -- 1: add
   | Op3 1 (ArgVal v1) (ArgVal v2) (ArgAddr out) <- op
   = do
-      atAddr out .= v1 + v2
+      writeTo out $ v1 + v2
       advance 4
       pure Continue
 
   -- 2: mul
   | Op3 2 (ArgVal v1) (ArgVal v2) (ArgAddr out) <- op
   = do
-      atAddr out .= v1 * v2
+      writeTo out $ v1 * v2
       advance 4
       pure Continue
 
@@ -160,7 +176,7 @@ eval st
   | Op1 3 (ArgAddr out) <- op
   , Just input <- st ^? inputStream . _head
   = do
-      atAddr out .= input
+      writeTo out input
       inputStream %= drop 1
       advance 2
       pure Continue
@@ -195,14 +211,14 @@ eval st
   -- 7: lt
   | Op3 7 (ArgVal v1) (ArgVal v2) (ArgAddr out) <- op
   = do
-      atAddr out .= (if v1 < v2 then 1 else 0)
+      writeTo out $ if v1 < v2 then 1 else 0
       advance 4
       pure Continue
 
   -- 8: eq
   | Op3 8 (ArgVal v1) (ArgVal v2) (ArgAddr out) <- op
   = do
-      atAddr out .= (if v1 == v2 then 1 else 0)
+      writeTo out $ if v1 == v2 then 1 else 0
       advance 4
       pure Continue
 
