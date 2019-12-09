@@ -20,9 +20,7 @@ module IntcodeComputer
   ) where
 
 import Parse
-import Util
 
-import           Control.Monad.Trans.Maybe
 import           Data.Vector.Unboxed (Vector)
 import qualified Data.Vector.Unboxed as Vec
 
@@ -37,6 +35,7 @@ instance Wrapped Val where
 type Tape = Vector Int
 
 data ComputerState = CS { _position :: !Addr
+                        , _relativeBase :: !Addr
                         , _inputStream :: [Int]
                         , _outputStream :: [Int]
                         , _tape :: !Tape
@@ -50,6 +49,7 @@ data Status = Continue | BlockedOnInput | Done
 
 type OpView = Maybe (Val, [OpArg])
 data OpArg = PositionMode Addr Val
+           | RelativeMode Addr Val
            | ImmediateMode Val
            deriving (Eq,Show)
 
@@ -70,7 +70,9 @@ pattern WaitingForInput s <- RunResult (BlockedOnInput, s)
 runProgram :: ComputerState -> RunResult
 runProgram = RunResult . runState mainLoop
 
-initProgram listing = CS (Addr 0) [] [] listing
+initProgram listing = CS (Addr 0) (Addr 0) [] [] listing'
+  where
+    listing' = listing <> Vec.replicate (tapeSize - Vec.length listing) 0
 
 provideInput :: [Int] -> ComputerState -> ComputerState
 provideInput input = inputStream %~ (<> input)
@@ -80,6 +82,9 @@ tapeParser = fmap Vec.fromList $ signedInteger `sepBy` "," <* optional newline
 
 ----- INTERNAL IMPL -----
 
+tapeSize :: Int
+tapeSize = 10000
+
 mainLoop :: Compute Status
 mainLoop = do
   status <- eval =<< get
@@ -87,11 +92,16 @@ mainLoop = do
     Continue -> mainLoop
     _        -> pure status
 
-argVal (PositionMode _ (Val v)) = Just v
-argVal (ImmediateMode (Val v)) = Just v
+argVal (PositionMode _ (Val v)) = v
+argVal (ImmediateMode (Val v)) = v
+argVal (RelativeMode _ (Val v)) = v
 
-pattern ArgVal v <- (argVal -> Just v)
-pattern ArgAddr a <- PositionMode a _
+argAddr (PositionMode a _) = Just a
+argAddr (RelativeMode a _) = Just a
+argAddr _ = Nothing
+
+pattern ArgVal v <- (argVal -> v)
+pattern ArgAddr a <- (argAddr -> Just a)
 
 atAddr (Addr addr) = tape . ix addr
 
@@ -104,6 +114,8 @@ readArg st mode addr = do
   case mode of
     0 -> PositionMode (Addr atPos) . Val <$> st `deref` Addr atPos
     1 -> pure . ImmediateMode . Val $ atPos
+    2 -> let absAddr = st ^. relativeBase . to (_Wrapped' +~ atPos)
+         in RelativeMode absAddr . Val <$> st `deref` absAddr
     _ -> Nothing
 
 viewOp :: ComputerState -> OpView
@@ -192,6 +204,13 @@ eval st
   = do
       atAddr out .= (if v1 == v2 then 1 else 0)
       advance 4
+      pure Continue
+
+  -- 9: set relative base
+  | Op1 9 (ArgVal v) <- op
+  = do
+      relativeBase . _Wrapped' += v
+      advance 2
       pure Continue
 
   -- 99: halt

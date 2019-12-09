@@ -5,6 +5,7 @@ import Test.Tasty.Hspec
 
 import Data.List
 import qualified Data.Vector as V
+import qualified Data.Vector.Unboxed as VU
 import Text.RawString.QQ
 
 import System.IO.Unsafe (unsafePerformIO)
@@ -23,6 +24,7 @@ import qualified Puzzles.P5 as P5
 import qualified Puzzles.P6 as P6
 import qualified Puzzles.P7 as P7
 import qualified Puzzles.P8 as P8
+import qualified Puzzles.P9 as P9
 
 main :: IO ()
 main = Test.Tasty.defaultMain =<< testSpec "advent-of-code-2019" spec
@@ -75,14 +77,14 @@ intcodeComputer = describe "intcode computer" $ do
              & IC.provideInput input
              & IC.runProgram
         of
-          IC.Halted (IC.Tape t) -> t `shouldBe` expect
+          IC.Halted (IC.Tape t) -> (VU.slice 0 (VU.length expect) t) `shouldBe` expect
           r -> expectationFailure $ show r
       assertOutput init input expect =
         case IC.initProgram init
              & IC.provideInput input
              & IC.runProgram
         of
-          IC.Halted (IC.Output t) -> t `shouldBe` expect
+          IC.Halted (IC.Output o) -> o `shouldBe` expect
   it "can handle add opcode" $
     assertFinalTape
     [1,0,0,0,99] []
@@ -99,6 +101,14 @@ intcodeComputer = describe "intcode computer" $ do
     assertFinalTape
     [1,1,1,4,99,5,6,0,99] []
     [30,1,1,4,2,5,6,0,99]
+  it "handles relative mode" $
+    assertFinalTape
+    [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99] []
+    [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]
+  it "handles big numbers" $
+    assertOutput
+    [1102,34915192,34915192,7,4,7,99,0] []
+    [1219070632396864]
 
 
 puzzleExample parser solver eg input expectation =
