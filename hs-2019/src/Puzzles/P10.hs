@@ -30,23 +30,21 @@ inputParser = gridToCoords <$> parseGrid <* optional newline
 
 countInLOS grid me = length . nubOrdOn (losAngle me) . filter (/= me) $ grid
 
-losAngle (myX,myY) (theirX,theirY) = (dx `div` factor, dy `div` factor)
+losAngle = fmap reduce . offset
   where
-    dx = theirX - myX
-    dy = theirY - myY
-    factor = gcd dx dy
+    offset = uncurry bimap <$> over both subtract
+    reduce = over both . flip div =<< uncurry gcd
 
 pt1 input = Just $ maximum . fmap (countInLOS input) $ input
 
 pt2 input = headMay . drop 199 $ vaporizeOrder
   where
-    station = maximumOn (countInLOS input) input
-    asteroids = filter (/= station) input
+    station@(x,y) = maximumOn (countInLOS input) input
     vaporizeOrder = mconcat
                     . transpose
-                    . fmap (sortOn (distance station) . snd)
-                    . sortOn (negate . uncurry atan2 . bimap fromIntegral fromIntegral . fst)
+                    . fmap (sortOn (uncurry (+) . bimap (abs . subtract x) (abs . subtract y)) . snd)
+                    . sortOn (negate . uncurry (atan2 `on` fromIntegral) . fst)
                     . groupSort
                     . fmap (losAngle station &&& identity)
-                    $ asteroids
-    distance (x1,y1) (x2,y2) = abs (x1 - x2) + abs (y1 - y2)
+                    . filter (/= station)
+                    $ input
