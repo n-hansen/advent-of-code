@@ -22,6 +22,8 @@ import qualified Puzzles.P6 as P6
 import qualified Puzzles.P7 as P7
 import qualified Puzzles.P8 as P8
 import qualified Puzzles.P9 as P9
+import qualified Puzzles.P10 as P10
+
 
 main :: IO ()
 main = Test.Tasty.defaultMain =<< testSpec "advent-of-code-2019" spec
@@ -38,6 +40,8 @@ spec = parallel $ do
   puzzle6
   puzzle7
   puzzle8
+  puzzle9
+  puzzle10
 
 
 util :: Spec
@@ -285,5 +289,38 @@ puzzle8 = describe "puzzle 8" $ do
 puzzle9 :: Spec
 puzzle9 = describe "puzzle 9" $ do
   let input = puzzleInput "9"
-  puzzleExample P5.inputParser P5.pt1 1 input $ Just 3100786347
-  puzzleExample P5.inputParser P5.pt2 2 input $ Just 87023
+  puzzleExample P9.inputParser P9.pt1 1 input 3100786347
+  puzzleExample P9.inputParser P9.pt2 2 input 87023
+
+puzzle10 :: Spec
+puzzle10 = describe "puzzle 10" $ do
+  puzzleExample P10.inputParser P10.pt1 1
+    [r|.#..#
+.....
+#####
+....#
+...##|]
+    8
+
+  puzzleExample P10.inputParser P10.pt2 2
+    [r|.#..##.###...#######
+##.############..##.
+.#.######.########.#
+.###.#######.####.#.
+#####.##.#.##.###.##
+..#####..#.#########
+####################
+#.####....###.#.#.##
+##.#################
+#####.##.###..####..
+..######..##.#######
+####.##.####...##..#
+.#####..#.######.###
+##...#.##########...
+#.##########.#######
+.####.#.###.###.#.##
+....##.##.###..#####
+.#.#.###########.###
+#.#.#.#####.####.###
+###.##.####.##.#..##|]
+    (8,2)
