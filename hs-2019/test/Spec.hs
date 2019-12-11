@@ -3,6 +3,7 @@
 import qualified Test.Tasty
 import Test.Tasty.Hspec
 
+import qualified Data.Text as T
 import Text.RawString.QQ
 
 import System.IO.Unsafe (unsafePerformIO)
@@ -23,6 +24,7 @@ import qualified Puzzles.P7 as P7
 import qualified Puzzles.P8 as P8
 import qualified Puzzles.P9 as P9
 import qualified Puzzles.P10 as P10
+import qualified Puzzles.P11 as P11
 
 
 main :: IO ()
@@ -42,6 +44,7 @@ spec = parallel $ do
   puzzle8
   puzzle9
   puzzle10
+  puzzle11
 
 
 util :: Spec
@@ -324,3 +327,16 @@ puzzle10 = describe "puzzle 10" $ do
 #.#.#.#####.####.###
 ###.##.####.##.#..##|]
     (8,2)
+
+puzzle11 :: Spec
+puzzle11 = describe "puzzle 11" $ do
+  let input = puzzleInput "11"
+  puzzleExample P11.inputParser P11.pt1 1 input 1967
+  puzzleExample P11.inputParser P11.pt2 2 input $
+    T.unlines [ [r|X  X XXX  X  X XXXX  XX  XXXX XXX  X  X|]
+              , [r|X X  X  X X  X X    X  X    X X  X X X |]
+              , [r|XX   XXX  X  X XXX  X      X  XXX  XX  |]
+              , [r|X X  X  X X  X X    X XX  X   X  X X X |]
+              , [r|X X  X  X X  X X    X  X X    X  X X X |]
+              , [r|X  X XXX   XX  XXXX  XXX XXXX XXX  X  X|]
+              ]
