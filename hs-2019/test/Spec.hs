@@ -25,6 +25,7 @@ import qualified Puzzles.P8 as P8
 import qualified Puzzles.P9 as P9
 import qualified Puzzles.P10 as P10
 import qualified Puzzles.P11 as P11
+import qualified Puzzles.P12 as P12
 
 
 main :: IO ()
@@ -45,6 +46,7 @@ spec = parallel $ do
   puzzle9
   puzzle10
   puzzle11
+  puzzle12
 
 
 util :: Spec
@@ -340,3 +342,33 @@ puzzle11 = describe "puzzle 11" $ do
               , [r|X X  X  X X  X X    X  X X    X  X X X |]
               , [r|X  X XXX   XX  XXXX  XXX XXXX XXX  X  X|]
               ]
+
+puzzle12 :: Spec
+puzzle12 = describe "puzzle 12" $ do
+  let Just exampleInput = parseMaybe P12.inputParser [r|<x=-1, y=0, z=2>
+<x=2, y=-10, z=-7>
+<x=4, y=-8, z=8>
+<x=3, y=5, z=-1>
+|]
+  describe "part 1" $ do
+    specify "single step" $
+      P12.step exampleInput
+      `shouldMatchList`
+      [ P12.P (2, -1,  1) ( 3, -1, -1)
+      , P12.P (3, -7, -4) ( 1,  3,  3)
+      , P12.P (1, -7,  5) (-3,  1, -3)
+      , P12.P (2,  2,  0) (-1, -3,  1)
+      ]
+    specify "2 steps" $ do
+      (unsafeHead . drop 2 . iterate P12.step $ exampleInput)
+      `shouldMatchList`
+      [ P12.P (5, -3, -1) ( 3, -2, -2)
+      , P12.P (1, -2,  2) (-2,  5,  6)
+      , P12.P (1, -4, -1) ( 0,  3, -6)
+      , P12.P (1, -4,  2) (-1, -6,  2)
+      ]
+
+    specify "energy calculation after 10 steps" $ do
+      (P12.energy . unsafeHead . drop 10 . iterate P12.step $ exampleInput)
+      `shouldBe`
+      179
