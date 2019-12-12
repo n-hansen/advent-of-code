@@ -64,25 +64,28 @@ mainLoop init = go . init . initProgram
                  Halted (Output (c:_)) -> st & paint c
                  Halted _              -> st
                  WaitingForInput (DrainedOutput [color, turnDirection] cpu) ->
-                   go
-                   $ st
+                   st
                    & computer .~ cpu
                    & paint color
                    & turn turnDirection
                    & stepForward
+                   & go
 
 pt1 = Just . views hasPainted Set.size . mainLoop initialState
 
 initialState' = RS (Set.singleton (0,0)) Set.empty N (0,0)
 
-display st = T.unlines $
-  let top = st ^. isWhite . to (maximum . fmap snd . Set.toList)
-      bot = st ^. isWhite . to (minimum . fmap snd . Set.toList)
-      lft = st ^. isWhite . to (minimum . fmap fst . Set.toList)
-      rgt = st ^. isWhite . to (maximum . fmap fst . Set.toList)
-      makeRow y = foldMap (renderCell y) [lft,lft+1..rgt]
+display st = T.unlines $ do
+  let painted = st ^. isWhite . to Set.toList
+      xs = fmap fst painted
+      ys = fmap snd painted
+      top = maximum ys
+      bot = minimum ys
+      lft = minimum xs
+      rgt = maximum xs
       renderCell y x = if views isWhite (Set.member (x,y)) st then "X" else " "
-  in [makeRow y | y <- [top,top-1..bot]]
+  y <- [top,top-1..bot]
+  pure $ foldMap (renderCell y) [lft..rgt]
 
 
 pt2 = Just . display . mainLoop initialState'
