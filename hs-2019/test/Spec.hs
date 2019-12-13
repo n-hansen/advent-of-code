@@ -345,11 +345,12 @@ puzzle11 = describe "puzzle 11" $ do
 
 puzzle12 :: Spec
 puzzle12 = describe "puzzle 12" $ do
-  let Just exampleInput = parseMaybe P12.inputParser [r|<x=-1, y=0, z=2>
+  let example = [r|<x=-1, y=0, z=2>
 <x=2, y=-10, z=-7>
 <x=4, y=-8, z=8>
 <x=3, y=5, z=-1>
 |]
+      Just exampleInput = parseMaybe P12.inputParser example
   describe "part 1" $ do
     specify "single step" $
       P12.step exampleInput
@@ -372,3 +373,7 @@ puzzle12 = describe "puzzle 12" $ do
       (P12.energy . unsafeHead . drop 10 . iterate P12.step $ exampleInput)
       `shouldBe`
       179
+
+  describe "part 2" $ do
+    puzzleExample P12.inputParser P12.pt2 1
+      example 2772
