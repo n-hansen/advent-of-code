@@ -26,6 +26,7 @@ import qualified Puzzles.P9 as P9
 import qualified Puzzles.P10 as P10
 import qualified Puzzles.P11 as P11
 import qualified Puzzles.P12 as P12
+import qualified Puzzles.P13 as P13
 
 
 main :: IO ()
@@ -47,6 +48,7 @@ spec = parallel $ do
   puzzle10
   puzzle11
   puzzle12
+  puzzle13
 
 
 util :: Spec
@@ -377,3 +379,9 @@ puzzle12 = describe "puzzle 12" $ do
   describe "part 2" $ do
     puzzleExample P12.inputParser P12.pt2 1
       example 2772
+
+puzzle13 :: Spec
+puzzle13 = describe "puzzle 13" $ do
+  let example = undefined
+  pure ()
+  -- puzzleExample P13.inputParser P13.pt1 1 foo bar
