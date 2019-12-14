@@ -35,6 +35,7 @@ dependencies:
 - prettyprinter
 - extra
 - linear
+- hashable
 
 default-extensions:
 - OverloadedStrings
@@ -51,6 +52,7 @@ default-extensions:
 - TypeApplications
 - PatternSynonyms
 - ViewPatterns
+- NumericUnderscores
 
 ghc-options:
 - -O2
