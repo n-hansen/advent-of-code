@@ -16,7 +16,6 @@ library
       Parse
       Puzzle
       Puzzles.P1
-      Puzzles.Template
       Util
   other-modules:
       Paths_aoc2021
@@ -59,7 +58,6 @@ library
 executable aoc2021-exe
   main-is: Main.hs
   other-modules:
-      Template
       Paths_aoc2021
   hs-source-dirs:
       app

@@ -1,11 +1,11 @@
-module Puzzles.Template where
+module Puzzles.P{{day}} where
 
 import AocPrelude
 import Parse
 import Puzzle
 
-pPUZZLE :: Puzzle
-pPUZZLE = Puzzle "PUZZLE" inputParser pt1 pt2
+p{{day}} :: Puzzle
+p{{day}} = Puzzle "{{day}}" inputParser pt1 pt2
 
 type Input = Text
 

@@ -1,13 +1,13 @@
-module Template where
+module Main where
 
 import AocPrelude
 import Puzzle
-{-PUZZLE_IMPORTS-}
+{{imports}}
 
 import System.Environment (getArgs)
 
 puzzles :: [Puzzle]
-puzzles = [{-PUZZLE_FNS-}]
+puzzles = [{{vals}}]
 
 main :: IO ()
 main = do
