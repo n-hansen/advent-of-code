@@ -4,14 +4,26 @@ import AocPrelude
 import Parse
 import Puzzle
 
+import Util
+
 p1 :: Puzzle
 p1 = Puzzle "1" inputParser pt1 pt2
 
-type Input = Text
+type Input = [Int]
 
 inputParser :: Parser Input
-inputParser = pure ""
+inputParser = signedInteger `endBy` newline
 
-pt1 _ = Nothing :: Maybe ()
+pt1 xs = Just $
+  xs
+  & window2
+  & filter (uncurry (<))
+  & length
 
-pt2 _ = Nothing :: Maybe ()
+pt2 xs = Just $
+  xs
+  & window 3
+  & fmap sum
+  & window2
+  & filter (uncurry (<))
+  & length

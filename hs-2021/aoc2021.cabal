@@ -100,8 +100,11 @@ executable aoc2021-exe
 
 test-suite aoc2021-test
   type: exitcode-stdio-1.0
-  main-is: Spec.hs
+  main-is: Driver.hs
   other-modules:
+      P1Spec
+      TestPrelude
+      UtilSpec
       Paths_aoc2021
   hs-source-dirs:
       test
@@ -121,6 +124,8 @@ test-suite aoc2021-test
       TypeApplications
       PatternSynonyms
       ViewPatterns
+      QuasiQuotes
+      OverloadedLists
   ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aoc2021
@@ -135,7 +140,9 @@ test-suite aoc2021-test
     , raw-strings-qq
     , recursion-schemes
     , tasty
+    , tasty-discover
     , tasty-hspec
+    , tasty-hunit
     , text
     , transformers
     , unordered-containers
