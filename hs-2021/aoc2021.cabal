@@ -1,0 +1,143 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           aoc2021
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/aoc2019#readme>
+license:        BSD3
+build-type:     Simple
+
+library
+  exposed-modules:
+      AocPrelude
+      Parse
+      Puzzle
+      Puzzles.P1
+      Puzzles.Template
+      Util
+  other-modules:
+      Paths_aoc2021
+  hs-source-dirs:
+      src
+  default-extensions:
+      NoImplicitPrelude
+      OverloadedStrings
+      ExistentialQuantification
+      NoMonomorphismRestriction
+      FlexibleContexts
+      TypeFamilies
+      ConstraintKinds
+      NamedFieldPuns
+      LambdaCase
+      MultiWayIf
+      TupleSections
+      GeneralizedNewtypeDeriving
+      TypeApplications
+      PatternSynonyms
+      ViewPatterns
+  ghc-options: -O2
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , extra
+    , megaparsec
+    , mtl
+    , optics
+    , prettyprinter
+    , protolude
+    , raw-strings-qq
+    , recursion-schemes
+    , text
+    , transformers
+    , unordered-containers
+    , vector
+  default-language: Haskell2010
+
+executable aoc2021-exe
+  main-is: Main.hs
+  other-modules:
+      Template
+      Paths_aoc2021
+  hs-source-dirs:
+      app
+  default-extensions:
+      NoImplicitPrelude
+      OverloadedStrings
+      ExistentialQuantification
+      NoMonomorphismRestriction
+      FlexibleContexts
+      TypeFamilies
+      ConstraintKinds
+      NamedFieldPuns
+      LambdaCase
+      MultiWayIf
+      TupleSections
+      GeneralizedNewtypeDeriving
+      TypeApplications
+      PatternSynonyms
+      ViewPatterns
+  ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aoc2021
+    , base >=4.7 && <5
+    , containers
+    , extra
+    , megaparsec
+    , mtl
+    , optics
+    , prettyprinter
+    , protolude
+    , raw-strings-qq
+    , recursion-schemes
+    , text
+    , transformers
+    , unordered-containers
+    , vector
+  default-language: Haskell2010
+
+test-suite aoc2021-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_aoc2021
+  hs-source-dirs:
+      test
+  default-extensions:
+      NoImplicitPrelude
+      OverloadedStrings
+      ExistentialQuantification
+      NoMonomorphismRestriction
+      FlexibleContexts
+      TypeFamilies
+      ConstraintKinds
+      NamedFieldPuns
+      LambdaCase
+      MultiWayIf
+      TupleSections
+      GeneralizedNewtypeDeriving
+      TypeApplications
+      PatternSynonyms
+      ViewPatterns
+  ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aoc2021
+    , base >=4.7 && <5
+    , containers
+    , extra
+    , megaparsec
+    , mtl
+    , optics
+    , prettyprinter
+    , protolude
+    , raw-strings-qq
+    , recursion-schemes
+    , tasty
+    , tasty-hspec
+    , text
+    , transformers
+    , unordered-containers
+    , vector
+  default-language: Haskell2010
