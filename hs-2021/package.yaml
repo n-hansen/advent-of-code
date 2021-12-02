@@ -45,6 +45,7 @@ default-extensions:
 - TypeApplications
 - PatternSynonyms
 - ViewPatterns
+- DeriveGeneric
 
 ghc-options:
 - -O2

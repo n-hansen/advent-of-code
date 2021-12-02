@@ -16,6 +16,7 @@ library
       Parse
       Puzzle
       Puzzles.P1
+      Puzzles.P2
       Util
   other-modules:
       Paths_aoc2021
@@ -37,6 +38,7 @@ library
       TypeApplications
       PatternSynonyms
       ViewPatterns
+      DeriveGeneric
   ghc-options: -O2
   build-depends:
       base >=4.7 && <5
@@ -77,6 +79,7 @@ executable aoc2021-exe
       TypeApplications
       PatternSynonyms
       ViewPatterns
+      DeriveGeneric
   ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aoc2021
@@ -101,6 +104,7 @@ test-suite aoc2021-test
   main-is: Driver.hs
   other-modules:
       P1Spec
+      P2Spec
       TestPrelude
       UtilSpec
       Paths_aoc2021
@@ -122,6 +126,7 @@ test-suite aoc2021-test
       TypeApplications
       PatternSynonyms
       ViewPatterns
+      DeriveGeneric
       QuasiQuotes
       OverloadedLists
   ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
