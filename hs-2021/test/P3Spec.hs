@@ -8,7 +8,7 @@ pt1 = puzzleExample P.inputParser P.pt1 "pt 1"
 pt2 = puzzleExample P.inputParser P.pt2 "pt 2"
 
 spec_p3 :: Spec
-spec_p3 = describe "day 3" $ do
+spec_p3 = do
   describe "example 1" $ do
     let input = [r|00100
 11110
