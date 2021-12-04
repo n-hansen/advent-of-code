@@ -7,7 +7,7 @@
          '[selmer.parser :as selmer])
 
 (def session-id
-  (slurp ".session_id"))
+  (str/trim-newline (slurp ".session_id")))
 (def solution-template
   (slurp "templates/Solution.template"))
 (def main-template
