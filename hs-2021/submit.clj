@@ -2,10 +2,7 @@
 
 (deps/add-deps '{:deps {org.clojure/data.zip {:mvn/version "1.0.0"}}})
 (require '[babashka.fs :as fs]
-         '[babashka.curl :as curl]
-         '[clojure.data.zip.xml :as zxml]
-         '[clojure.data.xml :as xml]
-         '[clojure.zip :as z])
+         '[babashka.curl :as curl])
 
 (def aoc-year 2021)
 
@@ -38,25 +35,15 @@
 
 (println (format "Submitting answer to day %s part %s: %s" day (:part result) (:answer result)))
 
+(defn html->plaintext
+  [html-str]
+  (:out (shell/sh "pandoc" "--read=html" "--write=plain" :in html-str)))
+
 (-> (curl/post (format "https://adventofcode.com/%s/day/%s/answer" aoc-year day)
                {:body (format "level=%s&answer=%s" (:part result) (:answer result))
                 :headers {"Cookie" (str "session=" session-id)
                           "Content-Type" "application/x-www-form-urlencoded"}
                 :raw-args ["--http1.1"]})
     :body
-    ;; the java XML parser is finicky and needs some handholding to parse the response
-    (str/replace #"<link [^>]+/>" "")
-    (str/replace "<!DOCTYPE html>" "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">")
-    xml/parse-str
-    z/xml-zip
-    (zxml/xml1-> :html
-                 :body
-                 :main)
-    z/node
-    ((fn splat [element-or-string]
-       (if (string? element-or-string)
-         element-or-string
-         (->> (:content element-or-string)
-              (mapcat splat)
-              (apply str)))))
+    html->plaintext
     println)
