@@ -18,6 +18,7 @@ library
       Puzzles.P1
       Puzzles.P2
       Puzzles.P3
+      Puzzles.P4
       Util
   other-modules:
       Paths_aoc2021
@@ -107,6 +108,7 @@ test-suite aoc2021-test
       P1Spec
       P2Spec
       P3Spec
+      P4Spec
       TestPrelude
       UtilSpec
       Paths_aoc2021
