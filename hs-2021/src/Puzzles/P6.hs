@@ -9,30 +9,29 @@ import qualified Data.Sequence as Seq
 p6 :: Puzzle
 p6 = Puzzle "6" inputParser pt1 pt2
 
-type Input = Seq Int
+type Input = [Int]
 
 inputParser :: Parser Input
-inputParser = toFreqList <$> (unsignedInteger `sepBy1` string ",") <* space
-  where
-    toFreqList =
-      Seq.fromList
-      . fmap (subtract 1 . length)
-      . group
-      . sort
-      . ([0..8] <>)
-
-step (multiplying :< rest) =
-  rest |> multiplying
-  & ix 6 %~ (+ multiplying)
+inputParser = (unsignedInteger `sepBy1` string ",") <* space
 
 pt1 =
   fmap sum
-  . head
+  . head -- [a] -> Maybe a
   . drop 80
-  . iterate step
+  . iterate (\case f :< fs -> fs |> f & ix 6 %~ (+ f)) -- pattern synonym and operators from `optics-core`
+  . Seq.fromList -- faster but unnecessary
+  . fmap (subtract 1 . length)
+  . group
+  . sort
+  . ([0..8] <>)
 
 pt2 =
   fmap sum
   . head
   . drop 256
-  . iterate step
+  . iterate (\case f :< fs -> fs |> f & ix 6 %~ (+ f))
+  . Seq.fromList
+  . fmap (subtract 1 . length)
+  . group
+  . sort
+  . ([0..8] <>)

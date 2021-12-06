@@ -15,11 +15,6 @@ spec_p6 = do
     let input = [r|3,4,3,1,2
 |]
 
-    specify "parser" $
-      parseMaybe P.inputParser input
-      `shouldBe`
-      Just [0,1,1,2,1,0,0,0,0]
-
     pt1 input 5934
     pt2 input 26984457539
     pure ()
