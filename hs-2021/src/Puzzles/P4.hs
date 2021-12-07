@@ -1,14 +1,21 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Puzzles.P4 where
 
 import AocPrelude hiding (some)
 import Parse
 import Puzzle
 
-p4 :: Puzzle
-p4 = Puzzle "4" inputParser pt1 pt2
+import Optics.TH
 
 data BingoBoard = BB [[(Int, Bool)]]
                 deriving (Show)
+makePrisms ''BingoBoard
+
+cells :: Traversal' BingoBoard (Int,Bool)
+cells = _BB % traversed % traversed
+
+p4 :: Puzzle
+p4 = Puzzle "4" inputParser pt1 pt2
 
 type Input = ([Int], [BingoBoard])
 
@@ -35,14 +42,14 @@ scoreNextWinner (d:ds) boards =
   where
     marked = markBoards d boards
 
-markBoards d = fmap (mark d)
-  where
-    mark number (BB b) =
-      BB $ fmap (fmap (\(n,m) -> (n, m || n == number))) b
+markBoards :: Int -> [BingoBoard] -> [BingoBoard]
+markBoards d = execState $ zoomMany (traversed % cells) $
+  (||) <$> use _2 <*> use (_1 % to (== d))
+  >>= assign _2
+
 checkWinner (BB b) =
   let marks = fmap (fmap snd) b
   in any and marks || any and (transpose marks)
-
 
 score number (BB board) =
   (number *)
