@@ -30,3 +30,19 @@ maybeToEither l = maybe (Left l) Right
 
 liftedNothing :: Monad m => MaybeT m a
 liftedNothing = MaybeT (pure Nothing)
+
+sparseHistogram :: (Ord a) => [a] -> [(a,Int)]
+sparseHistogram =
+  fmap (unsafeHead &&& length)
+  . group
+  . sort
+
+fullHistogram :: (Ord a, Enum a) => [a] -> [(a,Int)]
+fullHistogram [] = []
+fullHistogram [x] = [(x,1)]
+fullHistogram (sort -> xs@(l :< (_ :> r))) =
+  (xs <> enumFromTo l r)
+  & sort
+  & group
+  & fmap (unsafeHead &&& subtract 1 . length)
+fullHistogram _ = panic "unreachable"

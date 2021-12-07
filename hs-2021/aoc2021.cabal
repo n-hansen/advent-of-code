@@ -21,6 +21,7 @@ library
       Puzzles.P4
       Puzzles.P5
       Puzzles.P6
+      Puzzles.P7
       Util
   other-modules:
       Paths_aoc2021
@@ -113,6 +114,7 @@ test-suite aoc2021-test
       P4Spec
       P5Spec
       P6Spec
+      P7Spec
       TestPrelude
       UtilSpec
       Paths_aoc2021
