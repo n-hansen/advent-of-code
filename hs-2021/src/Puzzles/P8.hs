@@ -61,12 +61,11 @@ digitsWithUniqueCounts =
   & fmap unsafeHead
 
 pt1 = Just
-  . length
-  . filter (`elem` (fmap snd digitsWithUniqueCounts))
-  . toListOf ( traversed
+  . lengthOf ( traversed
                % output
-               % traversed
+               % folded
                % to length
+               % filtered (elemOf (traversed % _2) `flip` digitsWithUniqueCounts)
              )
 
 translations =
