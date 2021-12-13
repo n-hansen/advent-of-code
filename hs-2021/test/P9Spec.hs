@@ -18,4 +18,4 @@ spec_p9 = do
 |]
 
     pt1 input 15
-    -- pt2 input ???
+    pt2 input 1134
