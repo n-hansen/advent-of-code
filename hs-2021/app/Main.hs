@@ -3,6 +3,7 @@ module Main where
 import AocPrelude
 import Puzzle
 import Puzzles.P8
+import Puzzles.P9
 import Puzzles.P2
 import Puzzles.P6
 import Puzzles.P7
@@ -14,7 +15,7 @@ import Puzzles.P5
 import System.Environment (getArgs)
 
 puzzles :: [Puzzle]
-puzzles = [p8,p2,p6,p7,p3,p4,p1,p5]
+puzzles = [p8,p9,p2,p6,p7,p3,p4,p1,p5]
 
 main :: IO ()
 main = do
