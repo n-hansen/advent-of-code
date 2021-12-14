@@ -28,6 +28,7 @@ dependencies:
 - raw-strings-qq
 - prettyprinter
 - extra
+- monad-loops
 
 default-extensions:
 - NoImplicitPrelude
