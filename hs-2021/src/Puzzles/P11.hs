@@ -13,7 +13,7 @@ import Optics.State.Operators
 
 import Prettyprinter
 
-import Text.RawString.QQ as X
+import Text.RawString.QQ
 
 data SimulationState = St { _completedSteps :: Int
                           , _energyMap :: Map (Int,Int) Int
