@@ -19,6 +19,7 @@ library
       Puzzles.P10
       Puzzles.P11
       Puzzles.P12
+      Puzzles.P13
       Puzzles.P2
       Puzzles.P3
       Puzzles.P4
@@ -118,6 +119,7 @@ test-suite aoc2021-test
       P10Spec
       P11Spec
       P12Spec
+      P13Spec
       P1Spec
       P2Spec
       P3Spec
