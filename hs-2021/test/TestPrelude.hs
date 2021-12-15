@@ -8,7 +8,6 @@ import AocPrelude as X hiding (Selector)
 import Test.Tasty as X
 import Test.Tasty.HUnit as X
 import Test.Tasty.Hspec as X hiding (after,after_)
-import Text.RawString.QQ as X
 
 import System.IO.Unsafe (unsafePerformIO)
 import Parse

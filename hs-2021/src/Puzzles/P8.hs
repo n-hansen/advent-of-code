@@ -10,8 +10,6 @@ import Optics.TH
 import qualified Data.Set as Set
 import qualified Data.Map as Map
 
-import Text.RawString.QQ
-
 type Pattern = Set Char
 
 data InputLine = IL { _signals :: Set Pattern
