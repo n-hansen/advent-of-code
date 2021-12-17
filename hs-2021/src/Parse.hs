@@ -5,11 +5,13 @@ module Parse
   , actualSpaces
   , actualSpaces1
   , singleDigitInt
+  , parseEither
   , Parser
   ) where
 
 import           AocPrelude hiding (some)
 
+import           Data.Either.Extra
 import           Text.Megaparsec as X hiding (State)
 import           Text.Megaparsec.Char as X
 import qualified Text.Megaparsec.Char.Lexer as L
@@ -42,3 +44,6 @@ singleDigitInt = parseDigit <$> digitChar
     parseDigit '8' = 8
     parseDigit '9' = 9
     _ = panic "unreachable"
+
+parseEither :: (TraversableStream s, VisualStream s) => Parsec Void s a -> s -> Either [Char] a
+parseEither p s = mapLeft errorBundlePretty $ parse p "" s
