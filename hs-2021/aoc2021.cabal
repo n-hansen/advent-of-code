@@ -24,6 +24,7 @@ library
       Puzzles.P15
       Puzzles.P16
       Puzzles.P17
+      Puzzles.P18
       Puzzles.P2
       Puzzles.P3
       Puzzles.P4
@@ -128,6 +129,7 @@ test-suite aoc2021-test
       P15Spec
       P16Spec
       P17Spec
+      P18Spec
       P1Spec
       P2Spec
       P3Spec
