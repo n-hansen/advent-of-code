@@ -143,5 +143,4 @@ test = pretty
 4846848554
 5283751526
 |]
-    parsed = fromMaybe undefined $ parseMaybe inputParser input
-
+    Just parsed = parseMaybe inputParser input
