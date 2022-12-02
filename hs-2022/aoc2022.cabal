@@ -1,0 +1,154 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.35.0.
+--
+-- see: https://github.com/sol/hpack
+
+name:           aoc2022
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/aoc2019#readme>
+license:        BSD3
+build-type:     Simple
+
+library
+  exposed-modules:
+      AocPrelude
+      Parse
+      Puzzle
+      Puzzles.P1
+      Util
+  other-modules:
+      Paths_aoc2022
+  hs-source-dirs:
+      src
+  default-extensions:
+      NoImplicitPrelude
+      OverloadedStrings
+      ExistentialQuantification
+      NoMonomorphismRestriction
+      FlexibleContexts
+      TypeFamilies
+      ConstraintKinds
+      NamedFieldPuns
+      LambdaCase
+      MultiWayIf
+      TupleSections
+      GeneralizedNewtypeDeriving
+      TypeApplications
+      PatternSynonyms
+      ViewPatterns
+      DeriveGeneric
+  ghc-options: -O2
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , extra
+    , lens
+    , megaparsec
+    , monad-loops
+    , mtl
+    , prettyprinter
+    , protolude
+    , raw-strings-qq
+    , recursion-schemes
+    , text
+    , transformers
+    , unordered-containers
+    , vector
+  default-language: Haskell2010
+
+executable aoc2022-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_aoc2022
+  hs-source-dirs:
+      app
+  default-extensions:
+      NoImplicitPrelude
+      OverloadedStrings
+      ExistentialQuantification
+      NoMonomorphismRestriction
+      FlexibleContexts
+      TypeFamilies
+      ConstraintKinds
+      NamedFieldPuns
+      LambdaCase
+      MultiWayIf
+      TupleSections
+      GeneralizedNewtypeDeriving
+      TypeApplications
+      PatternSynonyms
+      ViewPatterns
+      DeriveGeneric
+  ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aoc2022
+    , base >=4.7 && <5
+    , containers
+    , extra
+    , lens
+    , megaparsec
+    , monad-loops
+    , mtl
+    , prettyprinter
+    , protolude
+    , raw-strings-qq
+    , recursion-schemes
+    , text
+    , transformers
+    , unordered-containers
+    , vector
+  default-language: Haskell2010
+
+test-suite aoc2022-test
+  type: exitcode-stdio-1.0
+  main-is: Driver.hs
+  other-modules:
+      P1Spec
+      TestPrelude
+      UtilSpec
+      Paths_aoc2022
+  hs-source-dirs:
+      test
+  default-extensions:
+      NoImplicitPrelude
+      OverloadedStrings
+      ExistentialQuantification
+      NoMonomorphismRestriction
+      FlexibleContexts
+      TypeFamilies
+      ConstraintKinds
+      NamedFieldPuns
+      LambdaCase
+      MultiWayIf
+      TupleSections
+      GeneralizedNewtypeDeriving
+      TypeApplications
+      PatternSynonyms
+      ViewPatterns
+      DeriveGeneric
+      QuasiQuotes
+      OverloadedLists
+  ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aoc2022
+    , base >=4.7 && <5
+    , containers
+    , extra
+    , lens
+    , megaparsec
+    , monad-loops
+    , mtl
+    , prettyprinter
+    , protolude
+    , raw-strings-qq
+    , recursion-schemes
+    , tasty
+    , tasty-discover
+    , tasty-hspec
+    , tasty-hunit
+    , text
+    , transformers
+    , unordered-containers
+    , vector
+  default-language: Haskell2010
