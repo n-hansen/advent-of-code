@@ -30,7 +30,7 @@ pt1 = Just . findStartIndex
 
 findStartOfMessage input = go windowSize initWindow initTail
   where
-    windowSize = 14
+    windowSize = 14 :: Int
     (initWindow,initTail) = first S.fromList . splitAt windowSize $ input
     go offset window tail
       | allDistinct window = offset

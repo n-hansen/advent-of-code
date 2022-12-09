@@ -29,6 +29,7 @@ dependencies:
 - prettyprinter
 - extra
 - monad-loops
+- zippers
 
 default-extensions:
 - NoImplicitPrelude

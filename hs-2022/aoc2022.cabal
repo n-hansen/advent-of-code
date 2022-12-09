@@ -21,6 +21,7 @@ library
       Puzzles.P4
       Puzzles.P5
       Puzzles.P6
+      Puzzles.P7
       Util
   other-modules:
       Paths_aoc2022
@@ -60,6 +61,7 @@ library
     , transformers
     , unordered-containers
     , vector
+    , zippers
   default-language: Haskell2010
 
 executable aoc2022-exe
@@ -103,6 +105,7 @@ executable aoc2022-exe
     , transformers
     , unordered-containers
     , vector
+    , zippers
   default-language: Haskell2010
 
 test-suite aoc2022-test
@@ -115,6 +118,7 @@ test-suite aoc2022-test
       P4Spec
       P5Spec
       P6Spec
+      P7Spec
       TestPrelude
       UtilSpec
       Paths_aoc2022
@@ -161,4 +165,5 @@ test-suite aoc2022-test
     , transformers
     , unordered-containers
     , vector
+    , zippers
   default-language: Haskell2010
