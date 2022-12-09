@@ -4,8 +4,8 @@ import TestPrelude
 
 import qualified Puzzles.P{{day}} as P
 
-pt1 = puzzleExample P.inputParser P.pt1 "pt 1"
-pt2 = puzzleExample P.inputParser P.pt2 "pt 2"
+pt1 = puzzleExample P.inputParser1 P.pt1 "pt 1"
+pt2 = puzzleExample P.inputParser2 P.pt2 "pt 2"
 
 spec_p{{day}} :: Spec
 spec_p{{day}} = do

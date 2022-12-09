@@ -5,12 +5,16 @@ import Parse
 import Puzzle
 
 p{{day}} :: Puzzle
-p{{day}} = Puzzle "{{day}}" inputParser pt1 pt2
+p{{day}} = Puzzle "{{day}}" inputParser1 inputParser2 pt1 pt2
 
-type Input = Text
+type Input1 = Text
+type Input2 = Input1
 
-inputParser :: Parser Input
-inputParser = pure ""
+inputParser1 :: Parser Input1
+inputParser1 = pure ""
+
+inputParser2 :: Parser Input2
+inputParser2 = inputParser1
 
 pt1 _ = Nothing :: Maybe ()
 
