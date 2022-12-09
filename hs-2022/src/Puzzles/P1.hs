@@ -5,7 +5,7 @@ import Parse
 import Puzzle
 
 p1 :: Puzzle
-p1 = Puzzle "1" inputParser pt1 pt2
+p1 = Puzzle "1" inputParser inputParser pt1 pt2
 
 type Input = [[Int]]
 
